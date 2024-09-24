@@ -1,0 +1,8 @@
+matplotlib
+nltk
+numpy
+scikit-learn
+pandas
+praw
+python-dotenv
+seaborn
