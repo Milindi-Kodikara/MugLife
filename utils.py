@@ -1,7 +1,6 @@
 # utility functions
 
 # File containing utility functions
-# @author Milindi Kodikara, RMIT University, 2024
 import re
 
 
