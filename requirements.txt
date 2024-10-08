@@ -6,3 +6,4 @@ pandas
 praw
 python-dotenv
 seaborn
+wordcloud
