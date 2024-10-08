@@ -7,3 +7,4 @@ praw
 python-dotenv
 seaborn
 wordcloud
+pyLDAvis
