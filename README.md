@@ -18,6 +18,6 @@ The analysis is conducted on the top posts and comments from Reddit, <> and <>.
 Run the jupyter notebook via the terminal or an editor.
 
 ## Contributors
-`🍃 Milindi Kodikara`&nbsp;&nbsp;&nbsp;&nbsp;`✨ Syeda Shabnam Khan`&nbsp;&nbsp;&nbsp;&nbsp;`🎈Arjun Perera`
+`🍃 Milindi Kodikara`&nbsp;&nbsp;&nbsp;&nbsp;`✨ Syeda Shabnam Khan`&nbsp;&nbsp;&nbsp;&nbsp;`🎈Mahawattage Perera`
 
 © 2024 Copyright for this project by its contributors.
