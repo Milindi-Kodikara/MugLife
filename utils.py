@@ -43,6 +43,7 @@ def read_file(filename):
 
     return set(item_list)
 
+
 # The following regex has been created with the help of:
 # https://stackoverflow.com/questions/73804264/removing-emojis-and-special-characters-in-python
 
@@ -67,3 +68,50 @@ regex_emojis = re.compile("["
                           u"\ufe0f"
                           u"\u3030"
                           "]+", re.UNICODE)
+
+
+def print_sentiment(sentiment, prefix=''):
+    """
+        Formatted print of the sentiment value
+
+        @param sentiment: sentiment value
+        @param prefix: 'pos', 'neg', 'neu' or 'compound' for Vader sentiment analysis
+    """
+    start = '\n\n------------Count sentiment value------------\n'
+    end = '\n------------------------------------\n\n'
+    if sentiment > 0:
+        print(green_rgb + start + prefix + str(sentiment) + end, end='')
+    elif sentiment < 0:
+        print(red_rgb + start + prefix + str(sentiment) + end, end='')
+    else:
+        print(yellow_rgb + start + prefix + str(sentiment) + end, end='')
+
+
+def print_coloured_tokens(method, token_list, sentiment, positive_words=None, negative_words=None):
+    """
+        Formatted print of the tokens based on the sentiment value and colored tokens for count sentiment analysis
+
+        @param method: Sentiment analysis method i.e 'Count' or 'Vader'
+        @param token_list: list of tokens extracted from the post + associated comments
+        @param sentiment: sentiment value for the post + associated comments based on the tokens
+        @param positive_words: set of positive sentiment words
+        @param negative_words: set of negative sentiment words
+    """
+    if positive_words is None:
+        positive_words = []
+    if method == 'Count':
+        for token in token_list:
+            if token in positive_words:
+                print(green_rgb + token + ', ', end='')
+            elif token in negative_words:
+                print(red_rgb + token + ', ', end='')
+            else:
+                print(yellow_rgb + token + ', ', end='')
+
+        print_sentiment(sentiment)
+
+    if method == 'Vader':
+        for cat, score in sentiment.items():
+            print(*token_list, sep=', ')
+            prefix = '{}: '.format(cat)
+            print_sentiment(score, prefix)
