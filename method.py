@@ -1,5 +1,6 @@
 import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
+import networkx as nx
 
 import utils
 
@@ -80,3 +81,57 @@ def sentiment_analysis(method, posts_df):
             utils.print_coloured_tokens(method, token_list, sentiment, set_pos_words, set_neg_words)
 
     return sentiment_list
+
+
+def construct_ego_graph(client, ego, ego_name):
+    """
+        Constructing the ego graph for top users.
+
+        @param client: Connection to the social media API
+        @param ego: The current user instance
+        @param ego_name: User name of the current user
+
+        @returns: The constructed ego graph
+    """
+    ego_graph = nx.DiGraph()
+
+    ego_graph.add_node(ego_name)
+
+    # get all the users that have replied to a submission of the ego
+    ego_submissions = ego.submissions
+
+    for submission in ego_submissions.top(time_filter="all"):
+        # get comments/replies to submission
+        for replies in submission.comments:
+            if replies.author != None:
+                # author of comment
+                replier_name = replies.author.name
+                try:
+                    replier_karma = replies.author.comment_karma
+                except AttributeError:
+                    replier_karma = 0
+
+                # Adding nodes and edges to add follower to graph
+                ego_graph.add_node(replier_name, karma=replier_karma)
+                ego_graph.add_edge(replier_name, ego_name)
+
+    # get all users that the ego has replied to
+    ego_comments = ego.comments
+    # get comments
+    for comment in ego_comments.top(time_filter="all"):
+        # get the user_id of the post that the ego's comment is replying to
+        parent_comment_id = comment.parent_id
+        parent_comment = client.comment(parent_comment_id)
+
+        if parent_comment.author != None:
+            replied_to_name = parent_comment.author.name
+            try:
+                replied_karma = parent_comment.author.comment_karma
+            except(AttributeError):
+                replied_karma = 0
+
+            # Add nodes and edges to add follower to graph
+            ego_graph.add_node(replied_to_name, karma=replied_karma)
+            ego_graph.add_edge(ego_name, replied_to_name)
+
+    return ego_graph
