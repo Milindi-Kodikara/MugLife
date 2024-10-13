@@ -3,6 +3,8 @@
 # File containing utility functions
 import re
 
+import networkx as nx
+
 
 def get_color_escape(r, g, b, background=False):
     """
@@ -115,3 +117,38 @@ def print_coloured_tokens(method, token_list, sentiment, positive_words=None, ne
             print(*token_list, sep=', ')
             prefix = '{}: '.format(cat)
             print_sentiment(score, prefix)
+
+
+def print_ego_graph(data_folder_path, ego_graph, ego_name):
+    """
+        Printing out the in and out degrees of the ego
+
+        @param data_folder_path: folder to save the graph file
+        @param ego_graph: The current user ego graph
+        @param ego_name: User name of the current user
+    """
+    # graph file name, rename to appropriate filename
+    graph_filepath = f'{data_folder_path}/ego_{ego_name}.graphml'
+
+    in_degree = ego_graph.in_degree(ego_name)
+    out_degree = ego_graph.out_degree(ego_name)
+
+    print(yellow_rgb + f'\n\nEgo name:\n{ego_name}', end='')
+    print(green_rgb + f'\nIn degree of ego:\n{in_degree}', end='')
+    print(red_rgb + f'\nOut degree of ego:\n{out_degree}', end='')
+
+    in_neighbours_list = [neighbour for neighbour in ego_graph.predecessors(ego_name)]
+    out_neighbours_list = [neighbour for neighbour in ego_graph.successors(ego_name)]
+
+    # Display in and out neighbour lists
+    print(green_rgb + '\nIn neighbours of ego:\n{', end='')
+    print(*in_neighbours_list, sep=', ', end='')
+    print('}')
+
+    print(red_rgb + '\nOut neighbours of ego:\n{', end='')
+    print(*out_neighbours_list, sep=', ', end='')
+    print('}')
+
+    # save graph
+    with open(graph_filepath, 'wb') as fOut:
+        nx.write_graphml(ego_graph, fOut)

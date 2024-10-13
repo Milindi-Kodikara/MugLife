@@ -1,4 +1,6 @@
 # helper functions for visualising data
+import networkx as nx
+
 import utils
 from collections import Counter
 import math
@@ -116,7 +118,6 @@ def display_time_series_stats(series, function, title, x_label, y_label, color):
     y_column = 'Values'
 
     combined_list = [[row.Date, row.Values] for row in df.itertuples()]
-    print(combined_list)
     generate_time_series(combined_list, title, x_column, y_column, x_label, y_label, color)
 
 
@@ -161,3 +162,16 @@ def display_word_cloud(model, feature_names):
         plt.axis("off")
 
     plt.show(block=True)
+
+
+def display_ego_graph(ego_graph, ego_name):
+    """
+        Display an ego graph for the given user
+
+        @param ego_graph: The current user ego graph
+        @param ego_name: User name of the current user
+    """
+    nx.draw_networkx(ego_graph, arrows=True, with_labels=True, pos=nx.kamada_kawai_layout(ego_graph, scale=10))
+    plt.axis('off')
+    plt.title(f'Ego graph for {ego_name}')
+    plt.show()
