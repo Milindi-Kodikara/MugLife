@@ -135,3 +135,54 @@ def construct_ego_graph(client, ego, ego_name):
             ego_graph.add_edge(ego_name, replied_to_name)
 
     return ego_graph
+
+
+def update_reply_graph_node(reply_graph, post_author):
+    """
+        Updating the reply graph upon encountering a new post.
+
+        @param reply_graph: Reply graph instance
+        @param post_author: Author of the post
+
+        @returns: The updated reply graph
+    """
+    # Check if author is in the reply graph
+    # If author is in, update the no. of posts
+    # Else, create a new node for the author
+    if post_author in reply_graph:
+        reply_graph.nodes[post_author]['subNum'] += 1
+    else:
+        reply_graph.add_node(post_author, subNum=1)
+
+    return reply_graph
+
+
+def update_reply_graph_edge(reply_graph, comment_author_name, post_comment_ids, post_id, comment_parent_id):
+    """
+        Updating the reply graph upon encountering a new comment.
+
+        @param reply_graph: Reply graph instance
+        @param comment_author_name: Author of the comment
+        @param post_comment_ids: List of post, post id, associated comments and comment ids
+        @param post_id: Current post id
+        @param comment_parent_id: Parent comment id of the current comment
+
+        @returns: The updated reply graph
+    """
+
+    # If edge exists, increment the replyNum,
+    # else, add a new edge
+
+    if reply_graph.has_edge(comment_author_name, post_comment_ids[post_id][comment_parent_id]):
+        reply_graph[comment_author_name][post_comment_ids[post_id][comment_parent_id]]['replyNum'] += 1
+    else:
+        # need to check if the nodes have been added yet, if not add it and set subNum to 0
+        if comment_author_name not in reply_graph:
+            reply_graph.add_node(comment_author_name, subNum=0)
+
+        if not post_comment_ids[post_id][comment_parent_id] in reply_graph:
+            reply_graph.add_node(post_comment_ids[post_id][comment_parent_id], subNum=0)
+
+        reply_graph.add_edge(comment_author_name, post_comment_ids[post_id][comment_parent_id], replyNum=1)
+
+    return reply_graph
