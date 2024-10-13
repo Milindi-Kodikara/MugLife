@@ -8,7 +8,7 @@ The analysis is conducted on the top posts and comments from Reddit, <> and <>.
 
 ### Set up
 1. Create and register a Reddit account
-2. Install Conda
+2. Install Python and Conda
 3. [Register an app](https://www.reddit.com/prefs/apps)
 4. Rename .env_template to .env and fill out the .env file params
 5. Go over [PRAW](https://praw.readthedocs.io/en/stable/index.html)

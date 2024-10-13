@@ -152,3 +152,21 @@ def print_ego_graph(data_folder_path, ego_graph, ego_name):
     # save graph
     with open(graph_filepath, 'wb') as fOut:
         nx.write_graphml(ego_graph, fOut)
+
+
+def dict_to_set_format(community_dict, max_num_communities):
+    """
+    Converts dictionary based community output (node -> community id) to list of sets (communities)
+    @param community_dict: dictionary based community representation
+    @param max_num_communities: maximum number of communities
+
+    @return: list of communities representation
+    """
+
+    # initialise
+    ground_truth_list = [set() for x in range(max_num_communities)]
+    # convert each (node : community id) pair to the required set format
+    for (name, clusId) in community_dict.items():
+        ground_truth_list[clusId].add(name)
+
+    return ground_truth_list
