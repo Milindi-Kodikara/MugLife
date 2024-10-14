@@ -164,14 +164,42 @@ def display_word_cloud(model, feature_names):
     plt.show(block=True)
 
 
-def display_ego_graph(ego_graph, ego_name):
+def display_networkx_graph(graph, title):
     """
-        Display an ego graph for the given user
+        Display a networkx graph for the given user
 
-        @param ego_graph: The current user ego graph
-        @param ego_name: User name of the current user
+        @param graph: The current networkx graph
+        @param title: title for the graph
     """
-    nx.draw_networkx(ego_graph, arrows=True, with_labels=True, pos=nx.kamada_kawai_layout(ego_graph, scale=10))
+    plt.figure(figsize=(20, 20))
+    nx.draw_networkx(graph, arrows=True, with_labels=True, pos=nx.kamada_kawai_layout(graph, scale=10))
     plt.axis('off')
-    plt.title(f'Ego graph for {ego_name}')
+    plt.title(title)
+    plt.show()
+
+
+def display_centrality_histograms(degree_centrality_list, eigen_vector_centrality_list, katz_centrality_list):
+    """
+        Display histograms for centrality
+
+        @param degree_centrality_list: Centrality list
+        @param eigen_vector_centrality_list: Eigen vector centrality list
+        @param katz_centrality_list: Katz centrality list
+    """
+
+    plt.subplot(1, 3, 1)
+    plt.hist(list(degree_centrality_list.values()))
+    plt.title('Degree')
+    plt.xlabel('Centrality')
+
+    plt.subplot(1, 3, 2)
+    plt.hist(list(eigen_vector_centrality_list.values()))
+    plt.title('Eigenvector')
+    plt.xlabel('Centrality')
+
+    plt.subplot(1, 3, 3)
+    plt.hist(list(katz_centrality_list.values()))
+    plt.title('Katz')
+    plt.xlabel('Centrality')
+
     plt.show()
