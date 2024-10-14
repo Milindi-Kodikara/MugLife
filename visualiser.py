@@ -46,9 +46,10 @@ def generate_bar_chart(x, y, color, title, x_label, y_label):
     generic_chart(title, x_label, y_label)
 
 
-def compute_term_freq(token_list, generate_visual, color=utils.green):
+def compute_term_freq(beverage_type, token_list, generate_visual, color=utils.green):
     """
         Calculate the term frequency of the corpus
+        @param beverage_type: 'Tea' or 'Coffee'
         @param token_list: list of processed tokens
         @param generate_visual: Bool to determine if the visual should be created
         @param color: bar colour of the bars of the bar graph
@@ -69,7 +70,7 @@ def compute_term_freq(token_list, generate_visual, color=utils.green):
         y = [count for term, count in term_freq_counter.most_common(term_freq)]
         x = [term for term, count in term_freq_counter.most_common(term_freq)]
 
-        generate_bar_chart(x, y, color, "Term frequency distribution", 'Term frequency',
+        generate_bar_chart(x, y, color, f"Term frequency distribution for {beverage_type}", 'Term frequency',
                            'Number of words with term frequency')
 
 
@@ -178,27 +179,28 @@ def display_networkx_graph(graph, title):
     plt.show()
 
 
-def display_centrality_histograms(degree_centrality_list, eigen_vector_centrality_list, katz_centrality_list):
+def display_centrality_histograms(degree_centrality_list, eigen_vector_centrality_list, katz_centrality_list, color):
     """
         Display histograms for centrality
 
         @param degree_centrality_list: Centrality list
         @param eigen_vector_centrality_list: Eigen vector centrality list
         @param katz_centrality_list: Katz centrality list
+        @param color: Bar color
     """
 
     plt.subplot(1, 3, 1)
-    plt.hist(list(degree_centrality_list.values()))
+    plt.hist(list(degree_centrality_list.values()), color=color)
     plt.title('Degree')
     plt.xlabel('Centrality')
 
     plt.subplot(1, 3, 2)
-    plt.hist(list(eigen_vector_centrality_list.values()))
+    plt.hist(list(eigen_vector_centrality_list.values()), color=color)
     plt.title('Eigenvector')
     plt.xlabel('Centrality')
 
     plt.subplot(1, 3, 3)
-    plt.hist(list(katz_centrality_list.values()))
+    plt.hist(list(katz_centrality_list.values()), color=color)
     plt.title('Katz')
     plt.xlabel('Centrality')
 

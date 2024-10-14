@@ -190,7 +190,7 @@ def update_reply_graph_edge(reply_graph, comment_author_name, post_comment_ids, 
     return reply_graph
 
 
-def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id):
+def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id, beverage_type, color):
     """
         Display the reply graph stats for the selected social media.
         Update node attributes with centrality.
@@ -199,12 +199,16 @@ def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id):
         @param reply_graph: The current reply graph
         @param data_folder_path: Filepath to save the graph file
         @param social_media_id: Social media
+        @param beverage_type: 'tea' or 'coffee' for the filename
+        @param color: Bar color
     """
     degree_centrality_list = nx.degree_centrality(reply_graph)
     eigen_vector_centrality_list = nx.eigenvector_centrality(reply_graph)
     katz_centrality_list = nx.katz_centrality(reply_graph)
 
-    visualiser.display_centrality_histograms(degree_centrality_list, eigen_vector_centrality_list, katz_centrality_list)
+    visualiser.display_centrality_histograms(degree_centrality_list,
+                                             eigen_vector_centrality_list,
+                                             katz_centrality_list, color)
 
     # Update node attributes with centrality
     # eigenvector centrality, stored in node attribute 'eigen'
@@ -215,7 +219,7 @@ def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id):
     for node_id, cent in katz_centrality_list.items():
         reply_graph.nodes[node_id]['katz'] = float(cent)
 
-    modified_reply_graph_filepath = f'{data_folder_path}/{social_media_id}_modified_centrality_reply_graph.graphml'
+    modified_reply_graph_filepath = f'{data_folder_path}/{social_media_id}_{beverage_type}_modified_centrality_reply_graph.graphml'
     nx.readwrite.write_graphml(reply_graph, modified_reply_graph_filepath, infer_numeric_types=True)
 
     # compute clustering
@@ -231,7 +235,7 @@ def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id):
     print(utils.yellow_rgb + f'\n\nBridges:\n{list(nx.bridges(reply_graph.to_undirected()))}', end='')
 
 
-def compute_community_stats(reply_graph, data_folder_path, social_media_id):
+def compute_community_stats(reply_graph, data_folder_path, social_media_id, beverage_type):
     """
         Display the reply graph stats for the selected social media.
         Update node attributes with community detection.
@@ -240,6 +244,7 @@ def compute_community_stats(reply_graph, data_folder_path, social_media_id):
         @param reply_graph: The current reply graph
         @param data_folder_path: Filepath to save the graph file
         @param social_media_id: Social media
+        @param beverage_type: 'tea' or 'coffee' for the filename
     """
     # k (clique size)
     k = 3
@@ -265,6 +270,7 @@ def compute_community_stats(reply_graph, data_folder_path, social_media_id):
         for node_id in community_list:
             reply_graph.nodes[node_id]['louvain'] = cluster_id
 
-    modified_reply_graph_filepath = f'{data_folder_path}/{social_media_id}_modified_community_reply_graph.graphml'
+    modified_reply_graph_filepath = \
+        f'{data_folder_path}/{social_media_id}_{beverage_type}_modified_community_reply_graph.graphml'
     # output modified graph
     nx.readwrite.write_graphml(reply_graph, modified_reply_graph_filepath, infer_numeric_types=True)
