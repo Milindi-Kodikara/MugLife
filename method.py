@@ -1,8 +1,10 @@
 import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
 import networkx as nx
+import community
 
 import utils
+import visualiser
 
 
 def compute_count_sentiment(token_list, positive_words, negative_words):
@@ -186,3 +188,83 @@ def update_reply_graph_edge(reply_graph, comment_author_name, post_comment_ids, 
         reply_graph.add_edge(comment_author_name, post_comment_ids[post_id][comment_parent_id], replyNum=1)
 
     return reply_graph
+
+
+def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id):
+    """
+        Display the reply graph stats for the selected social media.
+        Update node attributes with centrality.
+        Save the updated graph.
+
+        @param reply_graph: The current reply graph
+        @param data_folder_path: Filepath to save the graph file
+        @param social_media_id: Social media
+    """
+    degree_centrality_list = nx.degree_centrality(reply_graph)
+    eigen_vector_centrality_list = nx.eigenvector_centrality(reply_graph)
+    katz_centrality_list = nx.katz_centrality(reply_graph)
+
+    visualiser.display_centrality_histograms(degree_centrality_list, eigen_vector_centrality_list, katz_centrality_list)
+
+    # Update node attributes with centrality
+    # eigenvector centrality, stored in node attribute 'eigen'
+    for node_id, cent in eigen_vector_centrality_list.items():
+        reply_graph.nodes[node_id]['eigen'] = float(cent)
+
+    # katz centrality, stored in node attribute 'katz'
+    for node_id, cent in katz_centrality_list.items():
+        reply_graph.nodes[node_id]['katz'] = float(cent)
+
+    modified_reply_graph_filepath = f'{data_folder_path}/{social_media_id}_modified_centrality_reply_graph.graphml'
+    nx.readwrite.write_graphml(reply_graph, modified_reply_graph_filepath, infer_numeric_types=True)
+
+    # compute clustering
+    print(utils.yellow_rgb + f'\n\nGlobal clustering coefficient/transitivity: {nx.transitivity(reply_graph)}', end='')
+
+    # compute components
+    print(
+        utils.green_rgb + f'\n\nNumber of strongly connected components: {nx.number_strongly_connected_components(reply_graph)}',
+        end='')
+    print(
+        utils.red_rgb + f'\n\nNumber of weakly connected components: {nx.number_weakly_connected_components(reply_graph)}',
+        end='')
+    print(utils.yellow_rgb + f'\n\nBridges:\n{list(nx.bridges(reply_graph.to_undirected()))}', end='')
+
+
+def compute_community_stats(reply_graph, data_folder_path, social_media_id):
+    """
+        Display the reply graph stats for the selected social media.
+        Update node attributes with community detection.
+        Save the updated graph.
+
+        @param reply_graph: The current reply graph
+        @param data_folder_path: Filepath to save the graph file
+        @param social_media_id: Social media
+    """
+    # k (clique size)
+    k = 3
+    cpm_community_list = list(nx.algorithms.community.k_clique_communities(nx.to_undirected(reply_graph), k))
+    print(utils.green_rgb + f'\nCPM community:\n{cpm_community_list}', end='')
+
+    # louvain
+    louvain_community_dict = community.best_partition(nx.to_undirected(reply_graph))
+    print(utils.red_rgb + f'\n\nLouvain community:\n{louvain_community_dict}', end='')
+
+    # convert output of Louvain to the same format as CPM
+    max_num_louvain_communities = max([y for (x, y) in louvain_community_dict.items()]) + 1
+    louvain_community_list = utils.dict_to_set_format(louvain_community_dict, max_num_louvain_communities)
+
+    # write out cpm and Louvain values to node attributes of graph
+    # cpm labels, stored in node attribute 'cpmClusId'
+    for cluster_id, community_list in enumerate(cpm_community_list):
+        for node_id in community_list:
+            reply_graph.nodes[node_id]['cpmClusId'] = cluster_id
+
+    # louvain labels, stored in node attribute 'louvain'
+    for cluster_id, community_list in enumerate(louvain_community_list):
+        for node_id in community_list:
+            reply_graph.nodes[node_id]['louvain'] = cluster_id
+
+    modified_reply_graph_filepath = f'{data_folder_path}/{social_media_id}_modified_community_reply_graph.graphml'
+    # output modified graph
+    nx.readwrite.write_graphml(reply_graph, modified_reply_graph_filepath, infer_numeric_types=True)
