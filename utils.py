@@ -119,16 +119,17 @@ def print_coloured_tokens(method, token_list, sentiment, positive_words=None, ne
             print_sentiment(score, prefix)
 
 
-def print_ego_graph(data_folder_path, ego_graph, ego_name):
+def print_ego_graph(data_folder_path, ego_graph, ego_name, beverage_type):
     """
         Printing out the in and out degrees of the ego
 
         @param data_folder_path: folder to save the graph file
         @param ego_graph: The current user ego graph
         @param ego_name: User name of the current user
+        @param beverage_type: 'tea' or 'coffee'
     """
     # graph file name, rename to appropriate filename
-    graph_filepath = f'{data_folder_path}/ego_{ego_name}.graphml'
+    graph_filepath = f'{data_folder_path}/{beverage_type}_ego_{ego_name}.graphml'
 
     in_degree = ego_graph.in_degree(ego_name)
     out_degree = ego_graph.out_degree(ego_name)
