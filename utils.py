@@ -3,8 +3,50 @@ import random
 # File containing utility functions
 import re
 
-import networkx as nx
 import numpy as np
+import pandas as pd
+
+
+def get_unique_authors(df, beverage_type):
+    repeating_authors = df[df.duplicated(['author'], keep=False)]
+    repeating_authors = repeating_authors[repeating_authors.author != 'None']  # Get rid of deleted users
+
+    print(f'Unique authors for the {beverage_type} dataset: {repeating_authors.author.nunique()}')
+    u_authors = list(repeating_authors.author.unique())
+
+    return u_authors
+
+
+def get_user_posts(reddit, author, n):
+    redditor = reddit.redditor(author)
+    user_posts_list = []
+
+    for submission in redditor.submissions.top(limit=n):
+        info_list = []
+        info_list.append(submission.id)
+        info_list.append(submission.score)
+        info_list.append(str(submission.author))
+        info_list.append(submission.num_comments)
+        info_list.append(str(submission.subreddit))
+        user_posts_list.append(info_list)
+
+    a = sorted(user_posts_list, key=lambda x: x[1], reverse=True)
+    user_posts_df = pd.DataFrame(a)
+    return user_posts_df
+
+
+def get_author_df(beverage_type, df, reddit_client):
+    u_authors = get_unique_authors(df, beverage_type)
+
+    authors_df = pd.DataFrame()  # Makes an empty dataframe
+    authors_df = authors_df.fillna(0)
+    for u in u_authors:  # Loops through every "influencer" user and gets 10 top posts per user
+        c = get_user_posts(reddit_client, u, 10)
+        authors_df = pd.concat([authors_df, c])
+
+    authors_df = authors_df.rename(index=str,  # renaming column names
+                                   columns={0: "id", 1: "score", 2: "author", 3: "num_comments", 4: "subreddit"})
+    return authors_df
 
 
 def get_color_escape(r, g, b, background=False):

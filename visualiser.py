@@ -269,3 +269,63 @@ def display_barabasi_albert_graph(trial_num, list_of_seeds, graph_to_display, pr
     display_linear_threshold_stats(trial_num, list_of_seeds, small_world_graph, prefix_filepath)
 
     nx.draw_networkx(small_world_graph, arrows=True, with_labels=True)
+
+
+def display_author_influence(df, beverage_type):
+    counts = df['subreddit'].value_counts()
+    # Only plot the subreddits that appear more than twice
+    ax = df[df['subreddit'].isin(counts[counts > 2].index)].subreddit.value_counts()
+    ax.plot(kind='bar')
+    generic_chart(f'Subreddits {beverage_type} users extend their influence', 'Subreddits', 'Number of posts')
+    # plt.savefig("BargraphSubreddits", dpi=150, bbox_inches='tight', pad_inches=0.5)
+
+
+# Ref: https://github.com/samridhprasad/reddit-analysis/blob/master/INFO440-Reddit.ipynb
+def author_influence_graph(authors_df, u_authors):
+    # Create a dataframe for network graph purposes
+    n_df = authors_df[['author', 'subreddit']]
+    print(n_df.head().to_string())
+    subs = list(n_df.subreddit.unique())  # Make list of unique subreddits to use in network graph
+
+    plt.figure(figsize=(18, 18))
+
+    # Create the graph from the dataframe
+    g = nx.from_pandas_edgelist(n_df, source='author', target='subreddit')
+
+    # Create a layout for nodes
+    layout = nx.spring_layout(g, iterations=50, scale=2)
+
+    # Draw the parts we want, edges thin and grey
+    # Influencers appear small and grey
+    # Subreddits appear in blue and sized according to their respective number of connections.
+    # Labels for subreddits ONLY
+    # People who have more connections are highlighted in color
+
+    # Go through every subbreddit, ask the graph how many connections it has.
+    # Multiply that by 80 to get the circle size
+    sub_size = [g.degree(sub) * 80 for sub in subs]
+    nx.draw_networkx_nodes(g,
+                           layout,
+                           nodelist=subs,
+                           node_size=sub_size,  # a LIST of sizes, based on g.degree
+                           node_color='lightblue')
+
+    # Draw all the entities
+    nx.draw_networkx_nodes(g, layout, nodelist=u_authors, node_color='#cccccc', node_size=100)
+
+    # Draw highly connected influencers
+    popular_people = [person for person in u_authors if g.degree(person) > 1]
+    nx.draw_networkx_nodes(g, layout, nodelist=popular_people, node_color='orange', node_size=100)
+
+    nx.draw_networkx_edges(g, layout, width=1, edge_color="#cccccc")
+
+    node_labels = dict(zip(subs, subs))  # labels for subs
+    nx.draw_networkx_labels(g, layout, labels=node_labels)
+
+    # No axis needed
+    plt.axis('off')
+    plt.title("Network Graph of Related Subreddits")
+    plt.savefig("NetworkGraph", bbox_inches='tight', pad_inches=0.5)
+    plt.show()
+
+
