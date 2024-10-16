@@ -125,7 +125,7 @@ def print_ego_graph(data_folder_path, ego_graph, ego_name, beverage_type):
 
         @param data_folder_path: folder to save the graph file
         @param ego_graph: The current user ego graph
-        @param ego_name: User name of the current user
+        @param ego_name: Name of the current user we are exploring
         @param beverage_type: 'tea' or 'coffee'
     """
     # graph file name, rename to appropriate filename
@@ -165,9 +165,31 @@ def dict_to_set_format(community_dict, max_num_communities):
     """
 
     # initialise
-    ground_truth_list = [set() for x in range(max_num_communities)]
+    community_list = [set() for x in range(max_num_communities)]
     # convert each (node : community id) pair to the required set format
-    for (name, clusId) in community_dict.items():
-        ground_truth_list[clusId].add(name)
+    for (name, clus_id) in community_dict.items():
+        community_list[clus_id].add(name)
 
-    return ground_truth_list
+    return community_list
+
+
+# Graph types
+
+
+type_reply = 0
+type_centrality = 1
+type_community = 2
+
+
+def load_graphs(data_folder_path, social_media_id, graph_bev_type, graph_type_index):
+    reply_graph_filepath = f'{data_folder_path}/{social_media_id}_{graph_bev_type}_reply_graph.graphml'
+    centrality_graph_filepath = f'{data_folder_path}/{social_media_id}_{graph_bev_type}_modified_centrality_reply_graph.graphml'
+
+    community_graph_filepath = f'{data_folder_path}/{social_media_id}_{graph_bev_type}_modified_community_reply_graph.graphml'
+
+    if graph_type_index == type_centrality:
+        return nx.readwrite.read_graphml(centrality_graph_filepath)
+    elif graph_type_index == type_community:
+        return nx.readwrite.read_graphml(community_graph_filepath)
+    else:
+        return nx.readwrite.read_graphml(reply_graph_filepath)

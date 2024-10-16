@@ -129,7 +129,7 @@ def construct_ego_graph(client, ego, ego_name):
             replied_to_name = parent_comment.author.name
             try:
                 replied_karma = parent_comment.author.comment_karma
-            except(AttributeError):
+            except AttributeError:
                 replied_karma = 0
 
             # Add nodes and edges to add follower to graph
@@ -149,8 +149,8 @@ def update_reply_graph_node(reply_graph, post_author):
         @returns: The updated reply graph
     """
     # Check if author is in the reply graph
-    # If author is in, update the no. of posts
-    # Else, create a new node for the author
+    # If author is already in the reply graph, update the no. of posts associated with the user
+    # Else, create a new node for the author with 1 associated post
     if post_author in reply_graph:
         reply_graph.nodes[post_author]['subNum'] += 1
     else:
@@ -172,7 +172,7 @@ def update_reply_graph_edge(reply_graph, comment_author_name, post_comment_ids, 
         @returns: The updated reply graph
     """
 
-    # If edge exists, increment the replyNum,
+    # If edge exists, increment the number of replies (replyNum)
     # else, add a new edge
 
     if reply_graph.has_edge(comment_author_name, post_comment_ids[post_id][comment_parent_id]):
@@ -219,7 +219,8 @@ def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id, be
     for node_id, cent in katz_centrality_list.items():
         reply_graph.nodes[node_id]['katz'] = float(cent)
 
-    modified_reply_graph_filepath = f'{data_folder_path}/{social_media_id}_{beverage_type}_modified_centrality_reply_graph.graphml'
+    modified_reply_graph_filepath = \
+        f'{data_folder_path}/{social_media_id}_{beverage_type}_modified_centrality_reply_graph.graphml'
     nx.readwrite.write_graphml(reply_graph, modified_reply_graph_filepath, infer_numeric_types=True)
 
     # compute clustering
@@ -237,7 +238,7 @@ def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id, be
 
 def compute_community_stats(reply_graph, data_folder_path, social_media_id, beverage_type):
     """
-        Display the reply graph stats for the selected social media.
+        Display the community detection stats for the selected social media.
         Update node attributes with community detection.
         Save the updated graph.
 

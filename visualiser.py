@@ -149,7 +149,7 @@ def display_word_cloud(model, feature_names):
 
     topic_num = len(model.components_)
     # number of wordclouds for each row
-    plot_col_num = 4
+    plot_col_num = 2
     # number of wordclouds for each column
     plot_row_num = int(math.ceil(topic_num / plot_col_num))
 
