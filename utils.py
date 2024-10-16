@@ -1,9 +1,10 @@
 # utility functions
-
+import random
 # File containing utility functions
 import re
 
 import networkx as nx
+import numpy as np
 
 
 def get_color_escape(r, g, b, background=False):
@@ -119,7 +120,7 @@ def print_coloured_tokens(method, token_list, sentiment, positive_words=None, ne
             print_sentiment(score, prefix)
 
 
-def print_ego_graph(data_folder_path, ego_graph, ego_name, beverage_type):
+def print_ego_graph_stats(ego_graph, ego_name):
     """
         Printing out the in and out degrees of the ego
 
@@ -128,9 +129,6 @@ def print_ego_graph(data_folder_path, ego_graph, ego_name, beverage_type):
         @param ego_name: Name of the current user we are exploring
         @param beverage_type: 'tea' or 'coffee'
     """
-    # graph file name, rename to appropriate filename
-    graph_filepath = f'{data_folder_path}/{beverage_type}_ego_{ego_name}.graphml'
-
     in_degree = ego_graph.in_degree(ego_name)
     out_degree = ego_graph.out_degree(ego_name)
 
@@ -149,10 +147,6 @@ def print_ego_graph(data_folder_path, ego_graph, ego_name, beverage_type):
     print(red_rgb + '\nOut neighbours of ego:\n{', end='')
     print(*out_neighbours_list, sep=', ', end='')
     print('}')
-
-    # save graph
-    with open(graph_filepath, 'wb') as fOut:
-        nx.write_graphml(ego_graph, fOut)
 
 
 def dict_to_set_format(community_dict, max_num_communities):
@@ -173,23 +167,22 @@ def dict_to_set_format(community_dict, max_num_communities):
     return community_list
 
 
-# Graph types
+def generate_weights(graph):
+    """
+    Generate weights for the edges.
 
+    @param graph: directed graph to generate weights on the edges.
+    @return: modified directed graph with weights on edges, under attribute 'weight'
+    """
 
-type_reply = 0
-type_centrality = 1
-type_community = 2
+    for current_node in graph.nodes():
+        # generate the number that the weights should sum up to
+        total_weight = random.random()
+        # use dirichlet distribution to generate the weights
+        weights_array = np.random.dirichlet(np.ones(graph.in_degree(current_node)), size=1) * total_weight
+        weights_list = weights_array[0].tolist()
 
+        for i, u in enumerate(graph.predecessors(current_node)):
+            graph.add_edge(u, current_node, weight=weights_list[i])
 
-def load_graphs(data_folder_path, social_media_id, graph_bev_type, graph_type_index):
-    reply_graph_filepath = f'{data_folder_path}/{social_media_id}_{graph_bev_type}_reply_graph.graphml'
-    centrality_graph_filepath = f'{data_folder_path}/{social_media_id}_{graph_bev_type}_modified_centrality_reply_graph.graphml'
-
-    community_graph_filepath = f'{data_folder_path}/{social_media_id}_{graph_bev_type}_modified_community_reply_graph.graphml'
-
-    if graph_type_index == type_centrality:
-        return nx.readwrite.read_graphml(centrality_graph_filepath)
-    elif graph_type_index == type_community:
-        return nx.readwrite.read_graphml(community_graph_filepath)
-    else:
-        return nx.readwrite.read_graphml(reply_graph_filepath)
+    return graph

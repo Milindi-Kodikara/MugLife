@@ -1,3 +1,4 @@
+import random
 import pandas as pd
 from nltk.sentiment import SentimentIntensityAnalyzer
 import networkx as nx
@@ -85,13 +86,14 @@ def sentiment_analysis(method, posts_df):
     return sentiment_list
 
 
-def construct_ego_graph(client, ego, ego_name):
+def construct_ego_graph(client, ego, ego_name, ego_graph_filepath):
     """
         Constructing the ego graph for top users.
 
         @param client: Connection to the social media API
         @param ego: The current user instance
         @param ego_name: User name of the current user
+        @param ego_graph_filepath: Filepath to save the ego graph
 
         @returns: The constructed ego graph
     """
@@ -135,6 +137,9 @@ def construct_ego_graph(client, ego, ego_name):
             # Add nodes and edges to add follower to graph
             ego_graph.add_node(replied_to_name, karma=replied_karma)
             ego_graph.add_edge(ego_name, replied_to_name)
+    # save graph
+    with open(ego_graph_filepath, 'wb') as fOut:
+        nx.write_graphml(ego_graph, fOut)
 
     return ego_graph
 
@@ -220,7 +225,7 @@ def compute_reply_graph_stats(reply_graph, data_folder_path, social_media_id, be
         reply_graph.nodes[node_id]['katz'] = float(cent)
 
     modified_reply_graph_filepath = \
-        f'{data_folder_path}/{social_media_id}_{beverage_type}_modified_centrality_reply_graph.graphml'
+        f'{data_folder_path}/{social_media_id}_{beverage_type}_centrality_graph.graphml'
     nx.readwrite.write_graphml(reply_graph, modified_reply_graph_filepath, infer_numeric_types=True)
 
     # compute clustering
@@ -272,6 +277,88 @@ def compute_community_stats(reply_graph, data_folder_path, social_media_id, beve
             reply_graph.nodes[node_id]['louvain'] = cluster_id
 
     modified_reply_graph_filepath = \
-        f'{data_folder_path}/{social_media_id}_{beverage_type}_modified_community_reply_graph.graphml'
+        f'{data_folder_path}/{social_media_id}_{beverage_type}_community_graph.graphml'
     # output modified graph
     nx.readwrite.write_graphml(reply_graph, modified_reply_graph_filepath, infer_numeric_types=True)
+
+
+def compute_linear_threshold(graph, trial_num, list_of_seeds):
+    """
+    Performs linear threshold model over the input directed graph.
+    Results are stored in two output lists.
+
+    @param graph: Input graph to perform linear threshold over.
+    @param trial_num: The number of runs/trials to run. The results are averaged over the trials/runs.
+    @param list_of_seeds: List of initial nodes to seed. Range from 0 to (number of nodes - 1).
+
+    @return: Two lists, average_activations_per_node_list, average_activations_per_iteration_list.
+
+            average_activations_per_node_list is a list with the size same as the number of nodes in
+            the graph.
+            Each index of the list (starting with zero) corresponds directly to the associated node,
+            and each entry represents the average number of activations
+            over the trials/runs, and should lie in [0,1] range.
+
+            average_activations_per_iteration_list is a list with the size same as the number of trials/runs.
+            Each index of the list corresponds to a trial/run, and each entry is the
+            total number of active nodes in that trial/run.
+    """
+
+    # generate initial lists/vectors for the two output lists
+    average_activations_per_node_list = [0 for x in range(nx.number_of_nodes(graph))]
+    average_activations_per_iteration_list = []
+
+    print('****** Begin linear threshold runs ******')
+    # loop through the runs/trials
+    for i in range(trial_num):
+        print(f'Trial/run no. {i}')
+        print('Trial/run no. {}'.format(i))
+
+        # for each node, generate the random thresholds
+        for current_node, attr in graph.nodes(data=True):
+            attr['threshold'] = random.random()
+
+        # list of active nodes
+        active_set = set(list_of_seeds)
+        last_active_set = set(list_of_seeds)
+        new_active_set = set()
+
+        # Looping until no more new activations
+        while len(last_active_set) > 0:
+            # Get all the nodes next to the current set of active nodes
+            neighbour_set = set()
+
+            for active_node in last_active_set:
+                neighbour_set.update([neighbour for neighbour in graph.successors(active_node) if
+                                      neighbour not in active_set and neighbour not in new_active_set])
+
+            # for each of these potential neighbours to be activated, test if it will be activated
+            for neighbour in neighbour_set:
+                try:
+                    # get the sum of weights
+                    total_weight = sum(
+                        [data_dict['weight'] for (u, v, data_dict) in graph.in_edges(neighbour, data=True)])
+                    # test against the node threshold
+                    if graph.nodes[neighbour]['threshold'] < total_weight:
+                        new_active_set.add(neighbour)
+                except KeyError as e:
+                    print(f"Key error: {e}, Edge is missing weights")
+
+            # update last active
+            last_active_set = new_active_set
+            # extend active set
+            active_set.update(new_active_set)
+            # reset new active
+            new_active_set = set()
+
+        # update the output lists
+        for x in active_set:
+            average_activations_per_node_list[x] += 1
+
+        # update with total number of activations
+        average_activations_per_iteration_list.append(len(active_set))
+
+    # average each entry in average_activations_per_node_list by number of runs/trials
+    entry_average_average_activations_per_node_list = [float(count) / trial_num for count in
+                                                       average_activations_per_node_list]
+    return entry_average_average_activations_per_node_list, average_activations_per_iteration_list

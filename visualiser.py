@@ -1,6 +1,7 @@
 # helper functions for visualising data
 import networkx as nx
 
+import method
 import utils
 from collections import Counter
 import math
@@ -205,3 +206,66 @@ def display_centrality_histograms(degree_centrality_list, eigen_vector_centralit
     plt.xlabel('Centrality')
 
     plt.show()
+
+
+# TODO: Add the desc here
+def display_linear_threshold_stats(trial_num, list_of_seeds, graph_to_explore, prefix_filepath):
+    if graph_to_explore != None:
+        average_activations_per_node_list, average_activations_per_iteration_list = method.compute_linear_threshold(
+            graph_to_explore,
+            trial_num, list_of_seeds)
+
+        print(f'Average activations per node:\n{average_activations_per_node_list}')
+        print(f'Average activations per iteration:\n{average_activations_per_iteration_list}')
+
+        total_nodes = nx.number_of_nodes(graph_to_explore)
+        print('\n------------Linear threshold graph exploration------------\n')
+        if len(average_activations_per_iteration_list) > 0:
+
+            average_nodes_activated = sum(average_activations_per_iteration_list) / len(
+                average_activations_per_iteration_list)
+
+            print(utils.green_rgb, f'Average number of nodes activated: {average_nodes_activated} out of {total_nodes}',
+                  end='')
+        else:
+            print(utils.green_rgb, f'Average number of nodes activated: 0 out of {total_nodes}',
+                  end='')
+
+        # Save to graph
+        # average activation per node for the cascade graph,
+        # stored in node attribute 'avgAct'
+        for node_id, avg_activation in enumerate(average_activations_per_node_list):
+            graph_to_explore.nodes[node_id]['avgAct'] = avg_activation
+
+        # Output modified graphs to respective files
+        linear_threshold_graph_filepath = f'{prefix_filepath}_linear_threshold_graph.graphml'
+
+        nx.readwrite.write_graphml(graph_to_explore, linear_threshold_graph_filepath, infer_numeric_types=True)
+
+
+def display_tree_graph(trial_num, list_of_seeds, graph_to_display, prefix_filepath):
+    branching_factor = 2
+    tree_height = 5
+
+    tree_graph = nx.balanced_tree(r=branching_factor, h=tree_height, create_using=graph_to_display)
+
+    tree_graph = utils.generate_weights(tree_graph)
+
+    prefix_filepath = f'{prefix_filepath}_tree'
+    display_linear_threshold_stats(trial_num, list_of_seeds, tree_graph, prefix_filepath)
+
+    nx.draw_networkx(tree_graph, arrows=False, with_labels=True)
+
+
+def display_barabasi_albert_graph(trial_num, list_of_seeds, graph_to_display, prefix_filepath):
+    num_nodes = graph_to_display.number_of_nodes()
+    num_edges = graph_to_display.number_of_edges()
+
+    small_world_graph = nx.barabasi_albert_graph(n=num_nodes, m=num_edges)
+
+    small_world_graph = utils.generate_weights(small_world_graph)
+
+    prefix_filepath = f'{prefix_filepath}_small_world'
+    display_linear_threshold_stats(trial_num, list_of_seeds, small_world_graph, prefix_filepath)
+
+    nx.draw_networkx(small_world_graph, arrows=True, with_labels=True)
