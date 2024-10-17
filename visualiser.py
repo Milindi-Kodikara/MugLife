@@ -176,7 +176,7 @@ def display_word_cloud(model, feature_names):
 
     for topicId, lTopicDist in enumerate(normalised_components):
         l_word_prob = {feature_names[i]: wordProb for i, wordProb in enumerate(lTopicDist)}
-        wordcloud = WordCloud(background_color='black')
+        wordcloud = WordCloud(background_color='white')
         wordcloud.fit_words(frequencies=l_word_prob)
         plt.subplot(plot_row_num, plot_col_num, topicId + 1)
         plt.title('Topic %d:' % (topicId + 1))
