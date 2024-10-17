@@ -364,7 +364,8 @@ def create_world_map(unique_words, token_list, beverage_type, file_path):
     top_unique_words_df.columns = ['country', 'count']
     print(f'Countries df:\n{top_unique_words_df}')
 
-    df = pd.merge(gapminder, top_unique_words_df, how='left', on='country')
+    df = pd.merge(gapminder, top_unique_words_df, how='outer', on='country')
+    df.fillna(0, inplace=True)
 
     colour_scheme = px.colors.sequential.YlOrBr
 
