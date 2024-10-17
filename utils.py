@@ -95,8 +95,8 @@ def get_color_escape(r, g, b, background=False):
     return '\033[{};2;{};{};{}m'.format(48 if background else 38, r, g, b)
 
 
-green = '#275c4d'
-red = '#af221d'
+green = '#ed8b12'
+red = '#613405'
 yellow = '#c59103'
 
 green_rgb = get_color_escape(39, 92, 77)
