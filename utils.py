@@ -2,6 +2,7 @@
 import random
 # File containing utility functions
 import re
+from prawcore.exceptions import Forbidden
 
 import numpy as np
 import pandas as pd
@@ -42,8 +43,11 @@ def get_author_df(beverage_type, df, reddit_client):
     authors_df = pd.DataFrame()  # Makes an empty dataframe
     authors_df = authors_df.fillna(0)
     for u in u_authors:  # Loops through every "influencer" user and gets 10 top posts per user
-        c = get_user_posts(reddit_client, u, 10)
-        authors_df = pd.concat([authors_df, c])
+        try:
+            c = get_user_posts(reddit_client, u, 10)
+            authors_df = pd.concat([authors_df, c])
+        except Forbidden:
+            print(f"Could not get author details for: u/{u}!")
 
     authors_df = authors_df.rename(index=str,  # renaming column names
                                    columns={0: "id", 1: "score", 2: "author", 3: "num_comments", 4: "subreddit"})
@@ -57,6 +61,24 @@ def calculate_frequency_special_words(special_unique_words, processed_token_list
     top = pd.DataFrame(total.T, index=special_unique_words)[0].nlargest(20)
 
     return top
+
+
+def fix_multiple_mentioned_countries(dict_top_unique_words, unique_word_list):
+    if 'lanka' in dict_top_unique_words.keys():
+        dict_top_unique_words['sri lanka'] = dict_top_unique_words['lanka']
+        del dict_top_unique_words['lanka']
+        unique_word_list.append('sri lanka')
+        unique_word_list.remove('lanka')
+
+    if 'ceylon' in dict_top_unique_words.keys():
+        ceylon_count = dict_top_unique_words.get('ceylon')
+        sri_lanka_count = dict_top_unique_words.get('sri lanka')
+        combined_count = ceylon_count + sri_lanka_count
+        dict_top_unique_words['sri lanka'] = combined_count
+        del dict_top_unique_words['ceylon']
+        unique_word_list.remove('ceylon')
+
+    return dict_top_unique_words, unique_word_list
 
 
 def get_color_escape(r, g, b, background=False):

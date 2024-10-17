@@ -10,3 +10,4 @@ wordcloud
 networkx
 python-louvain
 plotly
+kaleido

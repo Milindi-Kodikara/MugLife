@@ -11,6 +11,7 @@ import pandas as pd
 import seaborn as sns
 from wordcloud import WordCloud
 
+import plotly
 import plotly.express as px
 
 plt.rcParams["figure.figsize"] = (14, 10)
@@ -52,9 +53,12 @@ def generate_bar_chart(x, y, color, title, x_label, y_label):
 def generate_frequency_graph(unique_word_list, processed_token_lists, x_label, color):
     top_unique_words = utils.calculate_frequency_special_words(unique_word_list, processed_token_lists)
 
-    top_unique_words.to_dict().values()
+    dict_top_unique_words = top_unique_words.to_dict()
 
-    y = top_unique_words.to_dict().values()
+    dict_top_unique_words, unique_word_list = utils.fix_multiple_mentioned_countries(dict_top_unique_words,
+                                                                                     unique_word_list)
+
+    y = dict_top_unique_words.values()
     x = [item.title() for item in unique_word_list]
 
     generate_bar_chart(x, y, color, f"Distribution of {x_label.lower()}", x_label, 'Frequency')
@@ -344,22 +348,14 @@ def author_influence_graph(authors_df, u_authors):
 
 # Ref: https://stackoverflow.com/questions/59297227/color-map-based-on-countries-frequency-counts
 
-def create_world_map(unique_words, token_list, beverage_type):
+def create_world_map(unique_words, token_list, beverage_type, file_path):
     gapminder = px.data.gapminder().query("year==2007")
     top_unique_words = utils.calculate_frequency_special_words(unique_words, token_list)
 
     dict_top_unique_words = top_unique_words.to_dict()
 
-    if 'lanka' in dict_top_unique_words.keys():
-        dict_top_unique_words['Sri Lanka'] = dict_top_unique_words['lanka']
-        del dict_top_unique_words['lanka']
-
-    if 'ceylon' in dict_top_unique_words.keys():
-        ceylon_count = dict_top_unique_words.get('ceylon')
-        sri_lanka_count = dict_top_unique_words.get('Sri Lanka')
-        combined_count = ceylon_count + sri_lanka_count
-        dict_top_unique_words['Sri Lanka'] = combined_count
-        del dict_top_unique_words['ceylon']
+    dict_top_unique_words, unique_word_list = utils.fix_multiple_mentioned_countries(dict_top_unique_words,
+                                                                                     unique_words)
 
     dict_top_unique_words = {k.title(): v for k, v in dict_top_unique_words.items()}
 
@@ -385,4 +381,7 @@ def create_world_map(unique_words, token_list, beverage_type):
                         color="count",
                         hover_name="country",  # column to add to hover information
                         color_continuous_scale=colour_scheme)
+
+    plotly.offline.plot(fig, filename=f'{file_path}_world_map.html')
+    fig.write_image(f"{file_path}_world_map.png")
     fig.show()
