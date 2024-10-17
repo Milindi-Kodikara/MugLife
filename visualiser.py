@@ -52,12 +52,12 @@ def generate_bar_chart(x, y, color, title, x_label, y_label):
 
 def generate_frequency_graph(unique_word_list, processed_token_lists, x_label, color):
     top_unique_words = utils.calculate_frequency_special_words(unique_word_list, processed_token_lists)
-
+    print(top_unique_words)
     dict_top_unique_words = top_unique_words.to_dict()
 
     dict_top_unique_words, unique_word_list = utils.fix_multiple_mentioned_countries(dict_top_unique_words,
                                                                                      unique_word_list)
-    formatted_country_list = [item.title() for item in unique_word_list]
+    formatted_country_list = [item.title() for item in dict_top_unique_words.keys()]
     new_df = pd.DataFrame({'country': formatted_country_list, 'count': dict_top_unique_words.values()})
     new_df = new_df.sort_values(by='count', ascending=False)
 
@@ -356,6 +356,7 @@ def create_world_map(unique_words, token_list, beverage_type, file_path):
     top_unique_words = utils.calculate_frequency_special_words(unique_words, token_list)
 
     dict_top_unique_words = top_unique_words.to_dict()
+    print(f'dict top unique words: {dict_top_unique_words}\n\nunique_word_list: {unique_words}')
 
     dict_top_unique_words, unique_word_list = utils.fix_multiple_mentioned_countries(dict_top_unique_words,
                                                                                      unique_words)
@@ -369,6 +370,8 @@ def create_world_map(unique_words, token_list, beverage_type, file_path):
 
     df = pd.merge(gapminder, top_unique_words_df, how='outer', on='country')
     df.fillna(0, inplace=True)
+    df['percent'] = (df['count'] /
+                     df['count'].sum()) * 100
 
     colour_scheme = px.colors.sequential.YlOrBr
 
@@ -382,10 +385,18 @@ def create_world_map(unique_words, token_list, beverage_type, file_path):
         colour_scheme = px.colors.sequential.Sunset
 
     fig = px.choropleth(df, locations="iso_alpha",
-                        color="count",
+                        color="percent",
                         hover_name="country",  # column to add to hover information
+                        labels={'percent': 'Popularity Percentage'},
                         color_continuous_scale=colour_scheme)
 
+    fig.update_geos(fitbounds='locations', landcolor='#f0f0f0', lakecolor='#f0f0f0', bgcolor='#fff')
+    fig_title = file_path.split('/')[1].title().replace('_', ' ')
+    fig.update_layout(
+        paper_bgcolor="#fff",
+        font=dict(color="black"),
+        title_text=fig_title,
+    )
     plotly.offline.plot(fig, filename=f'{file_path}_world_map.html')
     fig.write_image(f"{file_path}_world_map.png")
     fig.show()
