@@ -72,8 +72,11 @@ def fix_multiple_mentioned_countries(dict_top_unique_words, unique_word_list):
 
     if 'ceylon' in dict_top_unique_words.keys():
         ceylon_count = dict_top_unique_words.get('ceylon')
-        sri_lanka_count = dict_top_unique_words.get('sri lanka')
-        combined_count = ceylon_count + sri_lanka_count
+        combined_count = ceylon_count
+        if 'sri lanka' in dict_top_unique_words.keys():
+            sri_lanka_count = dict_top_unique_words.get('sri lanka')
+            combined_count = ceylon_count + sri_lanka_count
+
         dict_top_unique_words['sri lanka'] = combined_count
         del dict_top_unique_words['ceylon']
         unique_word_list.remove('ceylon')

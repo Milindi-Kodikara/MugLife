@@ -57,9 +57,12 @@ def generate_frequency_graph(unique_word_list, processed_token_lists, x_label, c
 
     dict_top_unique_words, unique_word_list = utils.fix_multiple_mentioned_countries(dict_top_unique_words,
                                                                                      unique_word_list)
+    formatted_country_list = [item.title() for item in unique_word_list]
+    new_df = pd.DataFrame({'country': formatted_country_list, 'count': dict_top_unique_words.values()})
+    new_df = new_df.sort_values(by='count', ascending=False)
 
-    y = dict_top_unique_words.values()
-    x = [item.title() for item in unique_word_list]
+    y = new_df['count']
+    x = new_df['country']
 
     generate_bar_chart(x, y, color, f"Distribution of {x_label.lower()}", x_label, 'Frequency')
 
@@ -338,7 +341,7 @@ def author_influence_graph(authors_df, u_authors):
 
     node_labels = dict(zip(subs, subs))  # labels for subs
     nx.draw_networkx_labels(g, layout, labels=node_labels)
-
+    # TODO: Save this as graphml
     # No axis needed
     plt.axis('off')
     plt.title("Network Graph of Related Subreddits")

@@ -163,7 +163,7 @@ def reddit_data_collection(
         # Add the post id and the author to dict of posts-ids
         post_comment_ids[post_id] = {post_id: post_author}
 
-        post.comments.replace_more(limit=None)
+        # post.comments.replace_more(limit=None)
         for comment in post.comments:
             if isinstance(comment, MoreComments):
                 continue
