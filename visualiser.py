@@ -301,19 +301,19 @@ def display_author_influence(df, beverage_type):
 
 
 # Ref: https://github.com/samridhprasad/reddit-analysis/blob/master/INFO440-Reddit.ipynb
-def author_influence_graph(authors_df, u_authors):
+def author_influence_graph(authors_df, u_authors, data_folder_path, beverage_type):
     # Create a dataframe for network graph purposes
     n_df = authors_df[['author', 'subreddit']]
     print(n_df.head().to_string())
     subs = list(n_df.subreddit.unique())  # Make list of unique subreddits to use in network graph
 
-    plt.figure(figsize=(18, 18))
+    plt.figure(figsize=(50, 50))
 
     # Create the graph from the dataframe
     g = nx.from_pandas_edgelist(n_df, source='author', target='subreddit')
 
     # Create a layout for nodes
-    layout = nx.spring_layout(g, iterations=50, scale=2)
+    layout = nx.spring_layout(g, iterations=50, scale=5)
 
     # Draw the parts we want, edges thin and grey
     # Influencers appear small and grey
@@ -328,24 +328,25 @@ def author_influence_graph(authors_df, u_authors):
                            layout,
                            nodelist=subs,
                            node_size=sub_size,  # a LIST of sizes, based on g.degree
-                           node_color=utils.green)
+                           node_color='red')
 
     # Draw all the entities
-    nx.draw_networkx_nodes(g, layout, nodelist=u_authors, node_color=utils.yellow, node_size=100)
+    nx.draw_networkx_nodes(g, layout, nodelist=u_authors, node_color='green', node_size=100)
 
     # Draw highly connected influencers
     popular_people = [person for person in u_authors if g.degree(person) > 1]
-    nx.draw_networkx_nodes(g, layout, nodelist=popular_people, node_color=utils.red, node_size=100)
+    nx.draw_networkx_nodes(g, layout, nodelist=popular_people, node_color='blue', node_size=100)
 
-    nx.draw_networkx_edges(g, layout, width=1, edge_color=utils.yellow)
+    nx.draw_networkx_edges(g, layout, width=1, edge_color='green')
 
     node_labels = dict(zip(subs, subs))  # labels for subs
     nx.draw_networkx_labels(g, layout, labels=node_labels)
-    # TODO: Save this as graphml
+    nx.readwrite.write_graphml(g, f'{data_folder_path}/{beverage_type}_network_graph_of_subreddits.graphml',
+                               infer_numeric_types=True)
     # No axis needed
     plt.axis('off')
-    plt.title("Network Graph of Related Subreddits")
-    plt.savefig("NetworkGraph", bbox_inches='tight', pad_inches=0.5)
+    plt.title(f"Influence of {beverage_type.upper()} Drinkers on Related Subreddits")
+    plt.savefig(f'{data_folder_path}/{beverage_type}_network_graph_of_subreddits', bbox_inches='tight', pad_inches=0.5)
     plt.show()
 
 
