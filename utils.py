@@ -5,6 +5,7 @@ import re
 
 import numpy as np
 import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
 
 
 def get_unique_authors(df, beverage_type):
@@ -47,6 +48,15 @@ def get_author_df(beverage_type, df, reddit_client):
     authors_df = authors_df.rename(index=str,  # renaming column names
                                    columns={0: "id", 1: "score", 2: "author", 3: "num_comments", 4: "subreddit"})
     return authors_df
+
+
+def calculate_frequency_special_words(special_unique_words, processed_token_lists):
+    count = CountVectorizer(vocabulary=special_unique_words)
+    matrix = count.fit_transform(processed_token_lists)
+    total = matrix.sum(0)
+    top = pd.DataFrame(total.T, index=special_unique_words)[0].nlargest(20)
+
+    return top
 
 
 def get_color_escape(r, g, b, background=False):

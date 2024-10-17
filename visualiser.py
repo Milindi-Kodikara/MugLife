@@ -11,6 +11,8 @@ import pandas as pd
 import seaborn as sns
 from wordcloud import WordCloud
 
+import plotly.express as px
+
 plt.rcParams["figure.figsize"] = (14, 10)
 plt.rcParams["figure.autolayout"] = True
 
@@ -45,6 +47,17 @@ def generate_bar_chart(x, y, color, title, x_label, y_label):
     """
     plt.bar(x, y, color=color)
     generic_chart(title, x_label, y_label)
+
+
+def generate_frequency_graph(unique_word_list, processed_token_lists, x_label, color):
+    top_unique_words = utils.calculate_frequency_special_words(unique_word_list, processed_token_lists)
+
+    top_unique_words.to_dict().values()
+
+    y = top_unique_words.to_dict().values()
+    x = [item.title() for item in unique_word_list]
+
+    generate_bar_chart(x, y, color, f"Distribution of {x_label.lower()}", x_label, 'Frequency')
 
 
 def compute_term_freq(beverage_type, token_list, generate_visual, color=utils.green):
@@ -308,16 +321,16 @@ def author_influence_graph(authors_df, u_authors):
                            layout,
                            nodelist=subs,
                            node_size=sub_size,  # a LIST of sizes, based on g.degree
-                           node_color='lightblue')
+                           node_color=utils.green)
 
     # Draw all the entities
-    nx.draw_networkx_nodes(g, layout, nodelist=u_authors, node_color='#cccccc', node_size=100)
+    nx.draw_networkx_nodes(g, layout, nodelist=u_authors, node_color=utils.yellow, node_size=100)
 
     # Draw highly connected influencers
     popular_people = [person for person in u_authors if g.degree(person) > 1]
-    nx.draw_networkx_nodes(g, layout, nodelist=popular_people, node_color='orange', node_size=100)
+    nx.draw_networkx_nodes(g, layout, nodelist=popular_people, node_color=utils.red, node_size=100)
 
-    nx.draw_networkx_edges(g, layout, width=1, edge_color="#cccccc")
+    nx.draw_networkx_edges(g, layout, width=1, edge_color=utils.yellow)
 
     node_labels = dict(zip(subs, subs))  # labels for subs
     nx.draw_networkx_labels(g, layout, labels=node_labels)
@@ -329,3 +342,47 @@ def author_influence_graph(authors_df, u_authors):
     plt.show()
 
 
+# Ref: https://stackoverflow.com/questions/59297227/color-map-based-on-countries-frequency-counts
+
+def create_world_map(unique_words, token_list, beverage_type):
+    gapminder = px.data.gapminder().query("year==2007")
+    top_unique_words = utils.calculate_frequency_special_words(unique_words, token_list)
+
+    dict_top_unique_words = top_unique_words.to_dict()
+
+    if 'lanka' in dict_top_unique_words.keys():
+        dict_top_unique_words['Sri Lanka'] = dict_top_unique_words['lanka']
+        del dict_top_unique_words['lanka']
+
+    if 'ceylon' in dict_top_unique_words.keys():
+        ceylon_count = dict_top_unique_words.get('ceylon')
+        sri_lanka_count = dict_top_unique_words.get('Sri Lanka')
+        combined_count = ceylon_count + sri_lanka_count
+        dict_top_unique_words['Sri Lanka'] = combined_count
+        del dict_top_unique_words['ceylon']
+
+    dict_top_unique_words = {k.title(): v for k, v in dict_top_unique_words.items()}
+
+    top_unique_words_df = pd.DataFrame(dict_top_unique_words, index=[0]).T.reset_index()
+
+    top_unique_words_df.columns = ['country', 'count']
+    print(f'Countries df:\n{top_unique_words_df}')
+
+    df = pd.merge(gapminder, top_unique_words_df, how='left', on='country')
+
+    colour_scheme = px.colors.sequential.YlOrBr
+
+    if beverage_type == 'tea':
+        colour_scheme = px.colors.sequential.Emrld
+
+    if beverage_type == 'all_tea':
+        colour_scheme = px.colors.sequential.speed
+
+    if beverage_type == 'all_coffee':
+        colour_scheme = px.colors.sequential.Sunset
+
+    fig = px.choropleth(df, locations="iso_alpha",
+                        color="count",
+                        hover_name="country",  # column to add to hover information
+                        color_continuous_scale=colour_scheme)
+    fig.show()
