@@ -1,6 +1,7 @@
 # helper functions for visualising data
 import networkx as nx
 
+import method
 import utils
 from collections import Counter
 import math
@@ -9,6 +10,9 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from wordcloud import WordCloud
+
+import plotly
+import plotly.express as px
 
 plt.rcParams["figure.figsize"] = (14, 10)
 plt.rcParams["figure.autolayout"] = True
@@ -44,6 +48,23 @@ def generate_bar_chart(x, y, color, title, x_label, y_label):
     """
     plt.bar(x, y, color=color)
     generic_chart(title, x_label, y_label)
+
+
+def generate_frequency_graph(unique_word_list, processed_token_lists, x_label, color):
+    top_unique_words = utils.calculate_frequency_special_words(unique_word_list, processed_token_lists)
+    print(top_unique_words)
+    dict_top_unique_words = top_unique_words.to_dict()
+
+    dict_top_unique_words, unique_word_list = utils.fix_multiple_mentioned_countries(dict_top_unique_words,
+                                                                                     unique_word_list)
+    formatted_country_list = [item.title() for item in dict_top_unique_words.keys()]
+    new_df = pd.DataFrame({'country': formatted_country_list, 'count': dict_top_unique_words.values()})
+    new_df = new_df.sort_values(by='count', ascending=False)
+
+    y = new_df['count']
+    x = new_df['country']
+
+    generate_bar_chart(x, y, color, f"Distribution of {x_label.lower()}", x_label, 'Frequency')
 
 
 def compute_term_freq(beverage_type, token_list, generate_visual, color=utils.green):
@@ -149,13 +170,13 @@ def display_word_cloud(model, feature_names):
 
     topic_num = len(model.components_)
     # number of wordclouds for each row
-    plot_col_num = 4
+    plot_col_num = 2
     # number of wordclouds for each column
     plot_row_num = int(math.ceil(topic_num / plot_col_num))
 
     for topicId, lTopicDist in enumerate(normalised_components):
         l_word_prob = {feature_names[i]: wordProb for i, wordProb in enumerate(lTopicDist)}
-        wordcloud = WordCloud(background_color='black')
+        wordcloud = WordCloud(background_color='white')
         wordcloud.fit_words(frequencies=l_word_prob)
         plt.subplot(plot_row_num, plot_col_num, topicId + 1)
         plt.title('Topic %d:' % (topicId + 1))
@@ -205,3 +226,178 @@ def display_centrality_histograms(degree_centrality_list, eigen_vector_centralit
     plt.xlabel('Centrality')
 
     plt.show()
+
+
+# TODO: Add the desc here
+def display_linear_threshold_stats(trial_num, list_of_seeds, graph_to_explore, prefix_filepath):
+    if graph_to_explore != None:
+        average_activations_per_node_list, average_activations_per_iteration_list = method.compute_linear_threshold(
+            graph_to_explore,
+            trial_num, list_of_seeds)
+
+        print(f'Average activations per node:\n{average_activations_per_node_list}')
+        print(f'Average activations per iteration:\n{average_activations_per_iteration_list}')
+
+        total_nodes = nx.number_of_nodes(graph_to_explore)
+        print('\n------------Linear threshold graph exploration------------\n')
+        if len(average_activations_per_iteration_list) > 0:
+
+            average_nodes_activated = sum(average_activations_per_iteration_list) / len(
+                average_activations_per_iteration_list)
+
+            print(utils.green_rgb, f'Average number of nodes activated: {average_nodes_activated} out of {total_nodes}',
+                  end='')
+        else:
+            print(utils.green_rgb, f'Average number of nodes activated: 0 out of {total_nodes}',
+                  end='')
+
+        # Save to graph
+        # average activation per node for the cascade graph,
+        # stored in node attribute 'avgAct'
+        for node_id, avg_activation in enumerate(average_activations_per_node_list):
+            graph_to_explore.nodes[node_id]['avgAct'] = avg_activation
+
+        # Output modified graphs to respective files
+        linear_threshold_graph_filepath = f'{prefix_filepath}_linear_threshold_graph.graphml'
+
+        nx.readwrite.write_graphml(graph_to_explore, linear_threshold_graph_filepath, infer_numeric_types=True)
+
+
+def display_tree_graph(trial_num, list_of_seeds, graph_to_display, prefix_filepath):
+    branching_factor = 2
+    tree_height = 5
+
+    tree_graph = nx.balanced_tree(r=branching_factor, h=tree_height, create_using=graph_to_display)
+
+    tree_graph = utils.generate_weights(tree_graph)
+
+    prefix_filepath = f'{prefix_filepath}_tree'
+    display_linear_threshold_stats(trial_num, list_of_seeds, tree_graph, prefix_filepath)
+
+    nx.draw_networkx(tree_graph, arrows=False, with_labels=True)
+
+
+def display_barabasi_albert_graph(trial_num, list_of_seeds, graph_to_display, prefix_filepath):
+    num_nodes = graph_to_display.number_of_nodes()
+    num_edges = graph_to_display.number_of_edges()
+
+    small_world_graph = nx.barabasi_albert_graph(n=num_nodes, m=num_edges)
+
+    small_world_graph = utils.generate_weights(small_world_graph)
+
+    prefix_filepath = f'{prefix_filepath}_small_world'
+    display_linear_threshold_stats(trial_num, list_of_seeds, small_world_graph, prefix_filepath)
+
+    nx.draw_networkx(small_world_graph, arrows=True, with_labels=True)
+
+
+def display_author_influence(df, beverage_type):
+    counts = df['subreddit'].value_counts()
+    # Only plot the subreddits that appear more than twice
+    ax = df[df['subreddit'].isin(counts[counts > 2].index)].subreddit.value_counts()
+    ax.plot(kind='bar')
+    generic_chart(f'Subreddits {beverage_type} users extend their influence', 'Subreddits', 'Number of posts')
+    # plt.savefig("BargraphSubreddits", dpi=150, bbox_inches='tight', pad_inches=0.5)
+
+
+# Ref: https://github.com/samridhprasad/reddit-analysis/blob/master/INFO440-Reddit.ipynb
+def author_influence_graph(authors_df, u_authors, data_folder_path, beverage_type):
+    # Create a dataframe for network graph purposes
+    n_df = authors_df[['author', 'subreddit']]
+    print(n_df.head().to_string())
+    subs = list(n_df.subreddit.unique())  # Make list of unique subreddits to use in network graph
+
+    plt.figure(figsize=(50, 50))
+
+    # Create the graph from the dataframe
+    g = nx.from_pandas_edgelist(n_df, source='author', target='subreddit')
+
+    # Create a layout for nodes
+    layout = nx.spring_layout(g, iterations=50, scale=5)
+
+    # Draw the parts we want, edges thin and grey
+    # Influencers appear small and grey
+    # Subreddits appear in blue and sized according to their respective number of connections.
+    # Labels for subreddits ONLY
+    # People who have more connections are highlighted in color
+
+    # Go through every subbreddit, ask the graph how many connections it has.
+    # Multiply that by 80 to get the circle size
+    sub_size = [g.degree(sub) * 80 for sub in subs]
+    nx.draw_networkx_nodes(g,
+                           layout,
+                           nodelist=subs,
+                           node_size=sub_size,  # a LIST of sizes, based on g.degree
+                           node_color='red')
+
+    # Draw all the entities
+    nx.draw_networkx_nodes(g, layout, nodelist=u_authors, node_color='green', node_size=100)
+
+    # Draw highly connected influencers
+    popular_people = [person for person in u_authors if g.degree(person) > 1]
+    nx.draw_networkx_nodes(g, layout, nodelist=popular_people, node_color='blue', node_size=100)
+
+    nx.draw_networkx_edges(g, layout, width=1, edge_color='green')
+
+    node_labels = dict(zip(subs, subs))  # labels for subs
+    nx.draw_networkx_labels(g, layout, labels=node_labels)
+    nx.readwrite.write_graphml(g, f'{data_folder_path}/{beverage_type}_network_graph_of_subreddits.graphml',
+                               infer_numeric_types=True)
+    # No axis needed
+    plt.axis('off')
+    plt.title(f"Influence of {beverage_type.upper()} Drinkers on Related Subreddits")
+    plt.savefig(f'{data_folder_path}/{beverage_type}_network_graph_of_subreddits', bbox_inches='tight', pad_inches=0.5)
+    plt.show()
+
+
+# Ref: https://stackoverflow.com/questions/59297227/color-map-based-on-countries-frequency-counts
+
+def create_world_map(unique_words, token_list, beverage_type, file_path):
+    gapminder = px.data.gapminder().query("year==2007")
+    top_unique_words = utils.calculate_frequency_special_words(unique_words, token_list)
+
+    dict_top_unique_words = top_unique_words.to_dict()
+    print(f'dict top unique words: {dict_top_unique_words}\n\nunique_word_list: {unique_words}')
+
+    dict_top_unique_words, unique_word_list = utils.fix_multiple_mentioned_countries(dict_top_unique_words,
+                                                                                     unique_words)
+
+    dict_top_unique_words = {k.title(): v for k, v in dict_top_unique_words.items()}
+
+    top_unique_words_df = pd.DataFrame(dict_top_unique_words, index=[0]).T.reset_index()
+
+    top_unique_words_df.columns = ['country', 'count']
+    print(f'Countries df:\n{top_unique_words_df}')
+
+    df = pd.merge(gapminder, top_unique_words_df, how='outer', on='country')
+    df.fillna(0, inplace=True)
+    df['percent'] = (df['count'] /
+                     df['count'].sum()) * 100
+
+    colour_scheme = px.colors.sequential.YlOrBr
+
+    if beverage_type == 'tea':
+        colour_scheme = px.colors.sequential.Emrld
+
+    if beverage_type == 'all_tea':
+        colour_scheme = px.colors.sequential.speed
+
+    if beverage_type == 'all_coffee':
+        colour_scheme = px.colors.sequential.Sunset
+
+    fig = px.choropleth(df, locations="iso_alpha",
+                        color="percent",
+                        hover_name="country",  # column to add to hover information
+                        labels={'percent': 'Popularity Percentage'},
+                        color_continuous_scale=colour_scheme)
+
+    fig.update_geos(fitbounds='locations', landcolor='#f0f0f0', lakecolor='#f0f0f0', bgcolor='#fff')
+    fig_title = file_path.split('/')[1].title().replace('_', ' ')
+    fig.update_layout(
+        paper_bgcolor="#fff",
+        font=dict(color="black"),
+        title_text=fig_title,
+    )
+    plotly.offline.plot(fig, filename=f'{file_path}_world_map.html')
+    fig.write_image(f"{file_path}_world_map.png")
+    fig.show()

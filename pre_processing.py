@@ -121,10 +121,12 @@ def reddit_data_collection(
 
     for post in collected_posts:
         subreddit_name = post.subreddit
-        post_type = tea
+        post_type = 'None'
 
         if subreddit_name == 'coffee' or subreddit_name == 'pourover':
             post_type = coffee
+        elif subreddit_name == 'tea' or subreddit_name == 'TeaPorn':
+            post_type = tea
 
         post_id = post.name
 
@@ -158,10 +160,10 @@ def reddit_data_collection(
         else:
             coffee_reply_graph = method.update_reply_graph_node(coffee_reply_graph, post_author)
 
-        # Add the post id and the author to list of ids
+        # Add the post id and the author to dict of posts-ids
         post_comment_ids[post_id] = {post_id: post_author}
 
-        post.comments.replace_more(limit=None)
+        # post.comments.replace_more(limit=None)
         for comment in post.comments:
             if isinstance(comment, MoreComments):
                 continue

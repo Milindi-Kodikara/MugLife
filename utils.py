@@ -1,9 +1,87 @@
 # utility functions
-
+import random
 # File containing utility functions
 import re
+from prawcore.exceptions import Forbidden
 
-import networkx as nx
+import numpy as np
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer
+
+
+def get_unique_authors(df, beverage_type):
+    repeating_authors = df[df.duplicated(['author'], keep=False)]
+    repeating_authors = repeating_authors[repeating_authors.author != 'None']  # Get rid of deleted users
+
+    print(f'Unique authors for the {beverage_type} dataset: {repeating_authors.author.nunique()}')
+    u_authors = list(repeating_authors.author.unique())
+
+    return u_authors
+
+
+def get_user_posts(reddit, author, n):
+    redditor = reddit.redditor(author)
+    user_posts_list = []
+
+    for submission in redditor.submissions.top(limit=n):
+        info_list = []
+        info_list.append(submission.id)
+        info_list.append(submission.score)
+        info_list.append(str(submission.author))
+        info_list.append(submission.num_comments)
+        info_list.append(str(submission.subreddit))
+        user_posts_list.append(info_list)
+
+    a = sorted(user_posts_list, key=lambda x: x[1], reverse=True)
+    user_posts_df = pd.DataFrame(a)
+    return user_posts_df
+
+
+def get_author_df(beverage_type, df, reddit_client):
+    u_authors = get_unique_authors(df, beverage_type)
+
+    authors_df = pd.DataFrame()  # Makes an empty dataframe
+    authors_df = authors_df.fillna(0)
+    for u in u_authors:  # Loops through every "influencer" user and gets 10 top posts per user
+        try:
+            c = get_user_posts(reddit_client, u, 10)
+            authors_df = pd.concat([authors_df, c])
+        except Forbidden:
+            print(f"Could not get author details for: u/{u}!")
+
+    authors_df = authors_df.rename(index=str,  # renaming column names
+                                   columns={0: "id", 1: "score", 2: "author", 3: "num_comments", 4: "subreddit"})
+    return authors_df
+
+
+def calculate_frequency_special_words(special_unique_words, processed_token_lists):
+    count = CountVectorizer(vocabulary=special_unique_words)
+    matrix = count.fit_transform(processed_token_lists)
+    total = matrix.sum(0)
+    top = pd.DataFrame(total.T, index=special_unique_words)[0].nlargest(20)
+
+    return top
+
+
+def fix_multiple_mentioned_countries(dict_top_unique_words, unique_word_list):
+    if 'lanka' in dict_top_unique_words.keys():
+        dict_top_unique_words['sri lanka'] = dict_top_unique_words['lanka']
+        del dict_top_unique_words['lanka']
+        unique_word_list.append('sri lanka')
+        unique_word_list.remove('lanka')
+
+    if 'ceylon' in dict_top_unique_words.keys():
+        ceylon_count = dict_top_unique_words.get('ceylon')
+        combined_count = ceylon_count
+        if 'sri lanka' in dict_top_unique_words.keys():
+            sri_lanka_count = dict_top_unique_words.get('sri lanka')
+            combined_count = ceylon_count + sri_lanka_count
+
+        dict_top_unique_words['sri lanka'] = combined_count
+        del dict_top_unique_words['ceylon']
+        unique_word_list.remove('ceylon')
+
+    return dict_top_unique_words, unique_word_list
 
 
 def get_color_escape(r, g, b, background=False):
@@ -20,8 +98,8 @@ def get_color_escape(r, g, b, background=False):
     return '\033[{};2;{};{};{}m'.format(48 if background else 38, r, g, b)
 
 
-green = '#275c4d'
-red = '#af221d'
+green = '#ed8b12'
+red = '#613405'
 yellow = '#c59103'
 
 green_rgb = get_color_escape(39, 92, 77)
@@ -119,18 +197,15 @@ def print_coloured_tokens(method, token_list, sentiment, positive_words=None, ne
             print_sentiment(score, prefix)
 
 
-def print_ego_graph(data_folder_path, ego_graph, ego_name, beverage_type):
+def print_ego_graph_stats(ego_graph, ego_name):
     """
         Printing out the in and out degrees of the ego
 
         @param data_folder_path: folder to save the graph file
         @param ego_graph: The current user ego graph
-        @param ego_name: User name of the current user
+        @param ego_name: Name of the current user we are exploring
         @param beverage_type: 'tea' or 'coffee'
     """
-    # graph file name, rename to appropriate filename
-    graph_filepath = f'{data_folder_path}/{beverage_type}_ego_{ego_name}.graphml'
-
     in_degree = ego_graph.in_degree(ego_name)
     out_degree = ego_graph.out_degree(ego_name)
 
@@ -150,10 +225,6 @@ def print_ego_graph(data_folder_path, ego_graph, ego_name, beverage_type):
     print(*out_neighbours_list, sep=', ', end='')
     print('}')
 
-    # save graph
-    with open(graph_filepath, 'wb') as fOut:
-        nx.write_graphml(ego_graph, fOut)
-
 
 def dict_to_set_format(community_dict, max_num_communities):
     """
@@ -165,9 +236,30 @@ def dict_to_set_format(community_dict, max_num_communities):
     """
 
     # initialise
-    ground_truth_list = [set() for x in range(max_num_communities)]
+    community_list = [set() for x in range(max_num_communities)]
     # convert each (node : community id) pair to the required set format
-    for (name, clusId) in community_dict.items():
-        ground_truth_list[clusId].add(name)
+    for (name, clus_id) in community_dict.items():
+        community_list[clus_id].add(name)
 
-    return ground_truth_list
+    return community_list
+
+
+def generate_weights(graph):
+    """
+    Generate weights for the edges.
+
+    @param graph: directed graph to generate weights on the edges.
+    @return: modified directed graph with weights on edges, under attribute 'weight'
+    """
+
+    for current_node in graph.nodes():
+        # generate the number that the weights should sum up to
+        total_weight = random.random()
+        # use dirichlet distribution to generate the weights
+        weights_array = np.random.dirichlet(np.ones(graph.in_degree(current_node)), size=1) * total_weight
+        weights_list = weights_array[0].tolist()
+
+        for i, u in enumerate(graph.predecessors(current_node)):
+            graph.add_edge(u, current_node, weight=weights_list[i])
+
+    return graph

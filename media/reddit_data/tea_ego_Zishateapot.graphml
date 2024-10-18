@@ -1,0 +1,521 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d0" for="node" attr.name="karma" attr.type="long" />
+  <graph edgedefault="directed">
+    <node id="Zishateapot">
+      <data key="d0">303</data>
+    </node>
+    <node id="Darkman013">
+      <data key="d0">4618</data>
+    </node>
+    <node id="MemeMaven">
+      <data key="d0">2910</data>
+    </node>
+    <node id="Canvasdancer">
+      <data key="d0">182</data>
+    </node>
+    <node id="E1ghtbit">
+      <data key="d0">9285</data>
+    </node>
+    <node id="ihamn">
+      <data key="d0">328</data>
+    </node>
+    <node id="georgefahd">
+      <data key="d0">84</data>
+    </node>
+    <node id="ohshuckz">
+      <data key="d0">0</data>
+    </node>
+    <node id="DogOnABike">
+      <data key="d0">74262</data>
+    </node>
+    <node id="Tom6187">
+      <data key="d0">17317</data>
+    </node>
+    <node id="error_museum">
+      <data key="d0">16108</data>
+    </node>
+    <node id="TheFoxIsLost">
+      <data key="d0">3827</data>
+    </node>
+    <node id="im_plant_Boredom">
+      <data key="d0">3044</data>
+    </node>
+    <node id="PoppaPelly">
+      <data key="d0">891</data>
+    </node>
+    <node id="SonicCephalopod">
+      <data key="d0">41690</data>
+    </node>
+    <node id="Handyandy58">
+      <data key="d0">54604</data>
+    </node>
+    <node id="KeruxDikaios">
+      <data key="d0">11514</data>
+    </node>
+    <node id="InLoveWithInternet">
+      <data key="d0">21702</data>
+    </node>
+    <node id="FhD89">
+      <data key="d0">727</data>
+    </node>
+    <node id="Angelita0026">
+      <data key="d0">715</data>
+    </node>
+    <node id="CameronFLSTC">
+      <data key="d0">475</data>
+    </node>
+    <node id="sept27">
+      <data key="d0">37019</data>
+    </node>
+    <node id="AdultLearner123ABC">
+      <data key="d0">916</data>
+    </node>
+    <node id="veliest420">
+      <data key="d0">4486</data>
+    </node>
+    <node id="laruhh">
+      <data key="d0">264</data>
+    </node>
+    <node id="TangerineTardigrade">
+      <data key="d0">17529</data>
+    </node>
+    <node id="QuadZebra883">
+      <data key="d0">5699</data>
+    </node>
+    <node id="KansasBrewista">
+      <data key="d0">7902</data>
+    </node>
+    <node id="TheMachinesWay">
+      <data key="d0">7120</data>
+    </node>
+    <node id="Heor326">
+      <data key="d0">196170</data>
+    </node>
+    <node id="MrGramGram">
+      <data key="d0">1733</data>
+    </node>
+    <node id="rowenajordana">
+      <data key="d0">4804</data>
+    </node>
+    <node id="MajorDFekt">
+      <data key="d0">5066</data>
+    </node>
+    <node id="tenorsaxhero">
+      <data key="d0">15338</data>
+    </node>
+    <node id="su2dv">
+      <data key="d0">19859</data>
+    </node>
+    <node id="blodorn">
+      <data key="d0">2422</data>
+    </node>
+    <node id="userdfh">
+      <data key="d0">0</data>
+    </node>
+    <node id="kassi0peia">
+      <data key="d0">26889</data>
+    </node>
+    <node id="SuPurrrrNova">
+      <data key="d0">26992</data>
+    </node>
+    <node id="twlefty">
+      <data key="d0">112150</data>
+    </node>
+    <node id="Cowarddd">
+      <data key="d0">6597</data>
+    </node>
+    <node id="Greenobserver">
+      <data key="d0">3639</data>
+    </node>
+    <node id="ogfuelbone12">
+      <data key="d0">13171</data>
+    </node>
+    <node id="fstop570">
+      <data key="d0">2165</data>
+    </node>
+    <node id="harrionparrix">
+      <data key="d0">494</data>
+    </node>
+    <node id="Tonysreptile">
+      <data key="d0">8</data>
+    </node>
+    <node id="Rocketfemme">
+      <data key="d0">4323</data>
+    </node>
+    <node id="wanchiz">
+      <data key="d0">489</data>
+    </node>
+    <node id="LivingCommunication5">
+      <data key="d0">244</data>
+    </node>
+    <node id="NicoleP1975">
+      <data key="d0">0</data>
+    </node>
+    <node id="horror_etc">
+      <data key="d0">1987</data>
+    </node>
+    <node id="darkskys100">
+      <data key="d0">21820</data>
+    </node>
+    <node id="palming-my-butt">
+      <data key="d0">3192</data>
+    </node>
+    <node id="The-Dead-Dont-Die">
+      <data key="d0">234</data>
+    </node>
+    <node id="Doctor_Deceptive">
+      <data key="d0">2286</data>
+    </node>
+    <node id="wheninrome91">
+      <data key="d0">3391</data>
+    </node>
+    <node id="popcornglasses">
+      <data key="d0">12466</data>
+    </node>
+    <node id="fight_for_anything">
+      <data key="d0">205718</data>
+    </node>
+    <node id="QFugp6IIyR6ZmoOh">
+      <data key="d0">21363</data>
+    </node>
+    <node id="gingerbreadman1242">
+      <data key="d0">146</data>
+    </node>
+    <node id="SacredGeometry25">
+      <data key="d0">46002</data>
+    </node>
+    <node id="Judgeromeo">
+      <data key="d0">7252</data>
+    </node>
+    <node id="xjustanotherstudentx">
+      <data key="d0">884</data>
+    </node>
+    <node id="Grinning_Skull">
+      <data key="d0">1159</data>
+    </node>
+    <node id="Gurnenthar2">
+      <data key="d0">3543</data>
+    </node>
+    <node id="getoffmypropartay">
+      <data key="d0">5808</data>
+    </node>
+    <node id="sync_M4st3r">
+      <data key="d0">211</data>
+    </node>
+    <node id="D_Engineer">
+      <data key="d0">651</data>
+    </node>
+    <node id="lonchbox">
+      <data key="d0">215</data>
+    </node>
+    <node id="happyunicorndust">
+      <data key="d0">9505</data>
+    </node>
+    <node id="chamekke">
+      <data key="d0">31521</data>
+    </node>
+    <node id="MrAlbinoPanda">
+      <data key="d0">1831</data>
+    </node>
+    <node id="summersunshine_86">
+      <data key="d0">337</data>
+    </node>
+    <node id="joernal">
+      <data key="d0">14817</data>
+    </node>
+    <node id="scripscraps">
+      <data key="d0">94</data>
+    </node>
+    <node id="Finndeed">
+      <data key="d0">193</data>
+    </node>
+    <node id="talktothelampa">
+      <data key="d0">8154</data>
+    </node>
+    <node id="TotesMessenger">
+      <data key="d0">3141592</data>
+    </node>
+    <node id="jroche90">
+      <data key="d0">5071</data>
+    </node>
+    <node id="DestroyTheHuman">
+      <data key="d0">74339</data>
+    </node>
+    <node id="Shredder67">
+      <data key="d0">4648</data>
+    </node>
+    <node id="amyleerobinson">
+      <data key="d0">10190</data>
+    </node>
+    <node id="TheTownTeaJunky">
+      <data key="d0">58478</data>
+    </node>
+    <node id="Fuzzy530">
+      <data key="d0">331</data>
+    </node>
+    <node id="Snowy_Skyy">
+      <data key="d0">23143</data>
+    </node>
+    <node id="fallenprogrammr">
+      <data key="d0">437</data>
+    </node>
+    <node id="Ihavememeobsession">
+      <data key="d0">4341</data>
+    </node>
+    <node id="selfdiagnoseddeath">
+      <data key="d0">10143</data>
+    </node>
+    <node id="F3L1X100">
+      <data key="d0">0</data>
+    </node>
+    <node id="30leavesofgold">
+      <data key="d0">359</data>
+    </node>
+    <node id="mjs391983">
+      <data key="d0">26</data>
+    </node>
+    <node id="JustAwesome360">
+      <data key="d0">66612</data>
+    </node>
+    <node id="3obardThawn3">
+      <data key="d0">100</data>
+    </node>
+    <node id="Invelious">
+      <data key="d0">30140</data>
+    </node>
+    <node id="morbidlyatease">
+      <data key="d0">20126</data>
+    </node>
+    <node id="jessicaxie123">
+      <data key="d0">637</data>
+    </node>
+    <node id="GoodFinePrint">
+      <data key="d0">16273</data>
+    </node>
+    <node id="fluffykerfuffle1">
+      <data key="d0">0</data>
+    </node>
+    <node id="toastertop">
+      <data key="d0">13960</data>
+    </node>
+    <node id="jared914">
+      <data key="d0">25864</data>
+    </node>
+    <node id="hammerthehalo">
+      <data key="d0">7594</data>
+    </node>
+    <node id="MercyInR3d">
+      <data key="d0">1820</data>
+    </node>
+    <node id="mansonfamily">
+      <data key="d0">0</data>
+    </node>
+    <node id="ItsUrMomMan">
+      <data key="d0">987</data>
+    </node>
+    <node id="Wongcayon">
+      <data key="d0">6</data>
+    </node>
+    <node id="Willie_Baw">
+      <data key="d0">2897</data>
+    </node>
+    <node id="nightlight6708">
+      <data key="d0">9465</data>
+    </node>
+    <node id="Amerikranian">
+      <data key="d0">2042</data>
+    </node>
+    <node id="Artgod">
+      <data key="d0">17482</data>
+    </node>
+    <node id="CaptainFreakzz">
+      <data key="d0">63</data>
+    </node>
+    <node id="suspiciouslyformal">
+      <data key="d0">12746</data>
+    </node>
+    <node id="Dr-Fetus-">
+      <data key="d0">2155</data>
+    </node>
+    <node id="3LD3RDR4G0N">
+      <data key="d0">0</data>
+    </node>
+    <node id="_PRATTER_">
+      <data key="d0">2025</data>
+    </node>
+    <node id="d0nM4q">
+      <data key="d0">27598</data>
+    </node>
+    <node id="Drogen24">
+      <data key="d0">0</data>
+    </node>
+    <node id="jelly_bean_gangbang">
+      <data key="d0">174396</data>
+    </node>
+    <node id="ToasteDesign">
+      <data key="d0">2729</data>
+    </node>
+    <node id="dr_sergen">
+      <data key="d0">9041</data>
+    </node>
+    <node id="Exfil-Camper69">
+      <data key="d0">4174</data>
+    </node>
+    <node id="cordyceptz">
+      <data key="d0">2304</data>
+    </node>
+    <node id="Th3_Wolflord">
+      <data key="d0">80007</data>
+    </node>
+    <node id="nikoneer1980">
+      <data key="d0">76923</data>
+    </node>
+    <node id="Rickest_Rick86">
+      <data key="d0">85917</data>
+    </node>
+    <node id="Shiverow">
+      <data key="d0">5337</data>
+    </node>
+    <node id="postcardmap45">
+      <data key="d0">33127</data>
+    </node>
+    <node id="bubusaur">
+      <data key="d0">1019</data>
+    </node>
+    <node id="prime014">
+      <data key="d0">3261</data>
+    </node>
+    <edge source="Zishateapot" target="Zishateapot" />
+    <edge source="Zishateapot" target="postcardmap45" />
+    <edge source="Zishateapot" target="bubusaur" />
+    <edge source="Zishateapot" target="Th3_Wolflord" />
+    <edge source="Zishateapot" target="Wongcayon" />
+    <edge source="Zishateapot" target="prime014" />
+    <edge source="Zishateapot" target="Darkman013" />
+    <edge source="Darkman013" target="Zishateapot" />
+    <edge source="MemeMaven" target="Zishateapot" />
+    <edge source="Canvasdancer" target="Zishateapot" />
+    <edge source="E1ghtbit" target="Zishateapot" />
+    <edge source="ihamn" target="Zishateapot" />
+    <edge source="georgefahd" target="Zishateapot" />
+    <edge source="ohshuckz" target="Zishateapot" />
+    <edge source="DogOnABike" target="Zishateapot" />
+    <edge source="Tom6187" target="Zishateapot" />
+    <edge source="error_museum" target="Zishateapot" />
+    <edge source="TheFoxIsLost" target="Zishateapot" />
+    <edge source="im_plant_Boredom" target="Zishateapot" />
+    <edge source="PoppaPelly" target="Zishateapot" />
+    <edge source="SonicCephalopod" target="Zishateapot" />
+    <edge source="Handyandy58" target="Zishateapot" />
+    <edge source="KeruxDikaios" target="Zishateapot" />
+    <edge source="InLoveWithInternet" target="Zishateapot" />
+    <edge source="FhD89" target="Zishateapot" />
+    <edge source="Angelita0026" target="Zishateapot" />
+    <edge source="CameronFLSTC" target="Zishateapot" />
+    <edge source="sept27" target="Zishateapot" />
+    <edge source="AdultLearner123ABC" target="Zishateapot" />
+    <edge source="veliest420" target="Zishateapot" />
+    <edge source="laruhh" target="Zishateapot" />
+    <edge source="TangerineTardigrade" target="Zishateapot" />
+    <edge source="QuadZebra883" target="Zishateapot" />
+    <edge source="KansasBrewista" target="Zishateapot" />
+    <edge source="TheMachinesWay" target="Zishateapot" />
+    <edge source="Heor326" target="Zishateapot" />
+    <edge source="MrGramGram" target="Zishateapot" />
+    <edge source="rowenajordana" target="Zishateapot" />
+    <edge source="MajorDFekt" target="Zishateapot" />
+    <edge source="tenorsaxhero" target="Zishateapot" />
+    <edge source="su2dv" target="Zishateapot" />
+    <edge source="blodorn" target="Zishateapot" />
+    <edge source="userdfh" target="Zishateapot" />
+    <edge source="kassi0peia" target="Zishateapot" />
+    <edge source="SuPurrrrNova" target="Zishateapot" />
+    <edge source="twlefty" target="Zishateapot" />
+    <edge source="Cowarddd" target="Zishateapot" />
+    <edge source="Greenobserver" target="Zishateapot" />
+    <edge source="ogfuelbone12" target="Zishateapot" />
+    <edge source="fstop570" target="Zishateapot" />
+    <edge source="harrionparrix" target="Zishateapot" />
+    <edge source="Tonysreptile" target="Zishateapot" />
+    <edge source="Rocketfemme" target="Zishateapot" />
+    <edge source="wanchiz" target="Zishateapot" />
+    <edge source="LivingCommunication5" target="Zishateapot" />
+    <edge source="NicoleP1975" target="Zishateapot" />
+    <edge source="horror_etc" target="Zishateapot" />
+    <edge source="darkskys100" target="Zishateapot" />
+    <edge source="palming-my-butt" target="Zishateapot" />
+    <edge source="The-Dead-Dont-Die" target="Zishateapot" />
+    <edge source="Doctor_Deceptive" target="Zishateapot" />
+    <edge source="wheninrome91" target="Zishateapot" />
+    <edge source="popcornglasses" target="Zishateapot" />
+    <edge source="fight_for_anything" target="Zishateapot" />
+    <edge source="QFugp6IIyR6ZmoOh" target="Zishateapot" />
+    <edge source="gingerbreadman1242" target="Zishateapot" />
+    <edge source="SacredGeometry25" target="Zishateapot" />
+    <edge source="Judgeromeo" target="Zishateapot" />
+    <edge source="xjustanotherstudentx" target="Zishateapot" />
+    <edge source="Grinning_Skull" target="Zishateapot" />
+    <edge source="Gurnenthar2" target="Zishateapot" />
+    <edge source="getoffmypropartay" target="Zishateapot" />
+    <edge source="sync_M4st3r" target="Zishateapot" />
+    <edge source="D_Engineer" target="Zishateapot" />
+    <edge source="lonchbox" target="Zishateapot" />
+    <edge source="happyunicorndust" target="Zishateapot" />
+    <edge source="chamekke" target="Zishateapot" />
+    <edge source="MrAlbinoPanda" target="Zishateapot" />
+    <edge source="summersunshine_86" target="Zishateapot" />
+    <edge source="joernal" target="Zishateapot" />
+    <edge source="scripscraps" target="Zishateapot" />
+    <edge source="Finndeed" target="Zishateapot" />
+    <edge source="talktothelampa" target="Zishateapot" />
+    <edge source="TotesMessenger" target="Zishateapot" />
+    <edge source="jroche90" target="Zishateapot" />
+    <edge source="DestroyTheHuman" target="Zishateapot" />
+    <edge source="Shredder67" target="Zishateapot" />
+    <edge source="amyleerobinson" target="Zishateapot" />
+    <edge source="TheTownTeaJunky" target="Zishateapot" />
+    <edge source="Fuzzy530" target="Zishateapot" />
+    <edge source="Snowy_Skyy" target="Zishateapot" />
+    <edge source="fallenprogrammr" target="Zishateapot" />
+    <edge source="Ihavememeobsession" target="Zishateapot" />
+    <edge source="selfdiagnoseddeath" target="Zishateapot" />
+    <edge source="F3L1X100" target="Zishateapot" />
+    <edge source="30leavesofgold" target="Zishateapot" />
+    <edge source="mjs391983" target="Zishateapot" />
+    <edge source="JustAwesome360" target="Zishateapot" />
+    <edge source="3obardThawn3" target="Zishateapot" />
+    <edge source="Invelious" target="Zishateapot" />
+    <edge source="morbidlyatease" target="Zishateapot" />
+    <edge source="jessicaxie123" target="Zishateapot" />
+    <edge source="GoodFinePrint" target="Zishateapot" />
+    <edge source="fluffykerfuffle1" target="Zishateapot" />
+    <edge source="toastertop" target="Zishateapot" />
+    <edge source="jared914" target="Zishateapot" />
+    <edge source="hammerthehalo" target="Zishateapot" />
+    <edge source="MercyInR3d" target="Zishateapot" />
+    <edge source="mansonfamily" target="Zishateapot" />
+    <edge source="ItsUrMomMan" target="Zishateapot" />
+    <edge source="Wongcayon" target="Zishateapot" />
+    <edge source="Willie_Baw" target="Zishateapot" />
+    <edge source="nightlight6708" target="Zishateapot" />
+    <edge source="Amerikranian" target="Zishateapot" />
+    <edge source="Artgod" target="Zishateapot" />
+    <edge source="CaptainFreakzz" target="Zishateapot" />
+    <edge source="suspiciouslyformal" target="Zishateapot" />
+    <edge source="Dr-Fetus-" target="Zishateapot" />
+    <edge source="3LD3RDR4G0N" target="Zishateapot" />
+    <edge source="_PRATTER_" target="Zishateapot" />
+    <edge source="d0nM4q" target="Zishateapot" />
+    <edge source="Drogen24" target="Zishateapot" />
+    <edge source="jelly_bean_gangbang" target="Zishateapot" />
+    <edge source="ToasteDesign" target="Zishateapot" />
+    <edge source="dr_sergen" target="Zishateapot" />
+    <edge source="Exfil-Camper69" target="Zishateapot" />
+    <edge source="cordyceptz" target="Zishateapot" />
+    <edge source="Th3_Wolflord" target="Zishateapot" />
+    <edge source="nikoneer1980" target="Zishateapot" />
+    <edge source="Rickest_Rick86" target="Zishateapot" />
+    <edge source="Shiverow" target="Zishateapot" />
+  </graph>
+</graphml>
