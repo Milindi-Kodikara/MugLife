@@ -7,20 +7,32 @@ This project uses Natural Language Processing techniques to determine once and f
 The analysis is conducted on the top posts and comments from Reddit.
 
 ### Set up
-1. Create and register a Reddit account
-2. Install Python and Conda
-3. [Register an app](https://www.reddit.com/prefs/apps)
-4. Rename .env_template to .env and fill out the .env file params
-5. Go over [PRAW](https://praw.readthedocs.io/en/stable/index.html)
-6. Install all the required libraries by `pip install -r requirements.txt`
+1. Install Python and Conda 
+2. Install all the required libraries by `pip install -r requirements.txt`
+3. Rename `.env_template` to `.env` and fill out the `.env` file params
 
-#### Google API Setup
-Create a google account
-Follow the instruction on the link: https://developers.google.com/maps/documentation/places/web-service
 
+#### Reddit data collection
+1. [Register an app](https://www.reddit.com/prefs/apps)
+2. Go over [PRAW](https://praw.readthedocs.io/en/stable/index.html)
+
+#### Google Reviews data collection
+1. Create a Google account
+2. Follow the instruction on the [link](https://developers.google.com/maps/documentation/places/web-service)
+
+#### YouTube data collection
+1. 
 
 ### Run
-Run the jupyter notebook, `mug_life.ipynb`, via the terminal or an editor.
+#### Reddit 
+- Run `mug_life.ipynb` for data collection and analysis of reddit data using terminal or editor
+
+#### Google review
+- Run `google_reviews_data_collection.ipynb` for data collection 
+- Run `cup_of_town.ipynb` for data exploration of Google review data using terminal or editor
+
+#### YouTube 
+
 
 ## Contributors
 `🍃 Milindi Kodikara`&nbsp;&nbsp;&nbsp;&nbsp;`✨ Syeda Shabnam Khan`&nbsp;&nbsp;&nbsp;&nbsp;`🎈 Mahawattage Perera`
