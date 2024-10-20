@@ -7,5 +7,7 @@ praw
 python-dotenv
 seaborn
 wordcloud
-pyLDAvis
 networkx
+python-louvain
+plotly
+kaleido
