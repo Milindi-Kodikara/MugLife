@@ -21,7 +21,8 @@ The analysis is conducted on the top posts and comments from Reddit.
 2. Follow the instruction on the [link](https://developers.google.com/maps/documentation/places/web-service)
 
 #### YouTube data collection
-1. 
+1. Create Google account 
+2. Follow the instructions on the [link](https://cloud.google.com/docs/authentication/api-keys#python)
 
 ### Run
 #### Reddit 
@@ -32,7 +33,8 @@ The analysis is conducted on the top posts and comments from Reddit.
 - Run `cup_of_town.ipynb` for data exploration of Google review data using terminal or editor
 
 #### YouTube 
-
+- Run `data_collection_yt.ipynb` for youtube data collection
+- Run `data_analysis_yt.ipynb` for data exploration of YouTube data using the terminal or editor 
 
 ## Contributors
 `🍃 Milindi Kodikara`&nbsp;&nbsp;&nbsp;&nbsp;`✨ Syeda Shabnam Khan`&nbsp;&nbsp;&nbsp;&nbsp;`🎈 Mahawattage Perera`

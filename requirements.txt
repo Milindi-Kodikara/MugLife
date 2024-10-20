@@ -13,3 +13,4 @@ plotly
 kaleido
 vaderSentiment
 googlemaps
+google-api-python-client
