@@ -14,6 +14,11 @@ The analysis is conducted on the top posts and comments from Reddit.
 5. Go over [PRAW](https://praw.readthedocs.io/en/stable/index.html)
 6. Install all the required libraries by `pip install -r requirements.txt`
 
+#### Google API Setup
+Create a google account
+Follow the instruction on the link: https://developers.google.com/maps/documentation/places/web-service
+
+
 ### Run
 Run the jupyter notebook, `mug_life.ipynb`, via the terminal or an editor.
 
